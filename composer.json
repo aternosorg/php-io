@@ -1,0 +1,27 @@
+{
+    "name": "aternos/io",
+    "description": "PHP library for IO operations",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Aternos\\IO\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aternos\\IO\\Test\\": "test/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Matthias Neid",
+            "email": "matthias@aternos.org"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^10.4"
+    },
+    "scripts": {
+        "test": "phpunit --config phpunit.xml"
+    }
+}
