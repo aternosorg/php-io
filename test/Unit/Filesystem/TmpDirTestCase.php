@@ -26,7 +26,13 @@ abstract class TmpDirTestCase extends TestCase
         if ($path === null) {
             $path = $this->tmpPath;
         }
+        if (!file_exists($path)) {
+            return;
+        }
         if (is_dir($path)) {
+            if (!is_readable($path)) {
+                chmod($path, 0777);
+            }
             foreach (scandir($path) as $file) {
                 if ($file === "." || $file === "..") {
                     continue;

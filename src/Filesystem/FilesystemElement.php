@@ -78,9 +78,17 @@ abstract class FilesystemElement implements FilesystemInterface, IOElementInterf
     {
         if (!@rename($this->path, $path)) {
             $error = error_get_last();
-            throw new MoveException("Could not move file (" . $this->path . " -> " . $path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+            throw new MoveException("Could not move element (" . $this->path . " -> " . $path . ")" . ($error ? ": " . $error["message"] : ""), $this);
         }
         $this->path = $path;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function exists(): bool
+    {
+        return file_exists($this->path);
     }
 }

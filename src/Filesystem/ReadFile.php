@@ -3,8 +3,12 @@
 namespace Aternos\IO\Filesystem;
 
 use Aternos\IO\Exception\CreateFileException;
+use Aternos\IO\Exception\DeleteException;
+use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MissingPermissionsException;
+use Aternos\IO\Exception\SeekException;
+use Aternos\IO\Exception\StatException;
 use Aternos\IO\Interfaces\Types\File\ReadFileInterface;
 
 class ReadFile extends FilesystemElement implements ReadFileInterface
@@ -46,23 +50,41 @@ class ReadFile extends FilesystemElement implements ReadFileInterface
         }
 
         if (!is_readable($this->path)) {
-            throw new MissingPermissionsException("Could not open file due to missing read permissions: " . $this->path, $this);
+            throw new MissingPermissionsException("Could not open file due to missing read permissions (" . $this->path . ")", $this);
         }
     }
 
     public function close(): static
     {
-        // TODO: Implement close() method.
+        if ($this->fileResource) {
+            @fclose($this->fileResource);
+            $this->fileResource = null;
+        }
+        return $this;
     }
 
+    /**
+     * @throws IOException
+     */
     public function getPosition(): int
     {
-        // TODO: Implement getPosition() method.
+        $file = $this->getFileResource();
+        // According to the documentation, this can return false, but I don't know how.
+        return @ftell($file);
     }
 
+    /**
+     * @throws StatException
+     * @throws IOException
+     */
     public function getSize(): int
     {
-        // TODO: Implement getSize() method.
+        $size = @filesize($this->path);
+        if (!$size) {
+            $error = error_get_last();
+            throw new StatException("Could not get file size (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $size;
     }
 
     public function getName(): string
@@ -70,14 +92,36 @@ class ReadFile extends FilesystemElement implements ReadFileInterface
         return basename($this->path);
     }
 
+    /**
+     * @throws IOException
+     * @throws ReadException
+     */
     public function read(int $length): string
     {
-        // TODO: Implement read() method.
+        if ($length === 0) {
+            return "";
+        }
+        $file = $this->getFileResource();
+        $buffer = @fread($file, $length);
+        if ($buffer === false) {
+            $error = error_get_last();
+            throw new ReadException("Could not read file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $buffer;
     }
 
+    /**
+     * @throws IOException
+     * @throws SeekException
+     */
     public function setPosition(int $position): static
     {
-        // TODO: Implement setPosition() method.
+        $file = $this->getFileResource();
+        if (@fseek($file, $position) !== 0) {
+            $error = error_get_last();
+            throw new SeekException("Could not set file position (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $this;
     }
 
     /**
@@ -88,6 +132,21 @@ class ReadFile extends FilesystemElement implements ReadFileInterface
         if (!@touch($this->path)) {
             $error = error_get_last();
             throw new CreateFileException("Could not create file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $this;
+    }
+
+    /**
+     * @throws DeleteException
+     */
+    public function delete(): static
+    {
+        if (!$this->exists()) {
+            return $this;
+        }
+        if (!@unlink($this->path)) {
+            $error = error_get_last();
+            throw new DeleteException("Could not delete file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
         }
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Test\Unit\Filesystem;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Filesystem\Directory;
@@ -122,5 +123,56 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertEquals($newName, $element->getName());
         $this->assertFileExists($this->getTmpPath() . "/" . $newName);
         $this->assertFileDoesNotExist($path);
+    }
+
+    public function testCheckIfElementExists(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->assertFalse($element->exists());
+        $element->create();
+        $this->assertTrue($element->exists());
+    }
+
+    public function testCreate(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->assertFalse(file_exists($path));
+        $element->create();
+        $this->assertTrue(file_exists($path));
+    }
+
+    public function testThrowsExceptionOnFailedCreation(): void
+    {
+        $this->expectException(IOException::class);
+        $element = $this->createElement("/dev/null/test");
+        $element->create();
+    }
+
+    public function testDelete(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $element->create();
+        $this->assertTrue(file_exists($path));
+        $this->assertSame($element, $element->delete());
+        $this->assertFalse(file_exists($path));
+    }
+
+    public function testDeleteNonExisting(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->assertFalse(file_exists($path));
+        $element->delete();
+        $this->assertFalse(file_exists($path));
+    }
+
+    public function testThrowsExceptionOnImpossibleDelete(): void
+    {
+        $element = $this->createElement("/dev/null");
+        $this->expectException(IOException::class);
+        $element->delete();
     }
 }
