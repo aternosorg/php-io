@@ -41,16 +41,7 @@ class Directory extends FilesystemElement implements DirectoryInterface
         if ($fileInfo->isDir()) {
             return new static($fileInfo->getPathname());
         }
-        return $this->createFile($fileInfo->getPathname());
-    }
-
-    /**
-     * @param string $path
-     * @return IOElementInterface
-     */
-    protected function createFile(string $path): IOElementInterface
-    {
-        return new ReadWriteFile($path);
+        return new File($fileInfo->getPathname());
     }
 
     /**

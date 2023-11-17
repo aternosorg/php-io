@@ -3,7 +3,7 @@
 namespace Aternos\IO\Test\Unit\Exception;
 
 use Aternos\IO\Exception\IOException;
-use Aternos\IO\Filesystem\ReadWriteFile;
+use Aternos\IO\Filesystem\File;
 use PHPUnit\Framework\TestCase;
 
 class IOExceptionTest extends TestCase
@@ -16,7 +16,7 @@ class IOExceptionTest extends TestCase
 
     public function testGetElement(): void
     {
-        $element = new ReadWriteFile("test");
+        $element = new File("test");
         $exception = new IOException("test", $element);
         $this->assertSame($element, $exception->getIOElement());
     }

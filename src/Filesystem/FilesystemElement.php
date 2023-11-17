@@ -2,8 +2,8 @@
 
 namespace Aternos\IO\Filesystem;
 
-use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\Exception\MoveException;
+use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 
@@ -62,7 +62,7 @@ abstract class FilesystemElement implements FilesystemInterface, IOElementInterf
         }
 
         $relativePath = "";
-        foreach ($sourcePathParts as $sourcePathPart) {
+        foreach ($sourcePathParts as $ignored) {
             $relativePath .= ".." . DIRECTORY_SEPARATOR;
         }
         foreach ($targetPathParts as $targetPathPart) {

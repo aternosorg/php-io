@@ -4,14 +4,13 @@ namespace Aternos\IO\Test\Unit\Filesystem;
 
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Filesystem\Directory;
+use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
-use Aternos\IO\Interfaces\Types\File\FileInterface;
+use Aternos\IO\Interfaces\Types\FileInterface;
 use Generator;
 
 class DirectoryTest extends FilesystemTestCase
 {
-    protected string $directoryClass = DirectoryInterface::class;
-    protected string $fileClass = FileInterface::class;
 
     protected function createElement(string $path): Directory
     {
@@ -35,15 +34,15 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(Generator::class, $children);
         $children = iterator_to_array($children);
         $this->assertCount(4, $children);
-        $this->assertContainsOnlyInstancesOf(\Aternos\IO\Interfaces\IOElementInterface::class, $children);
+        $this->assertContainsOnlyInstancesOf(IOElementInterface::class, $children);
 
-        $this->assertInstanceOf($this->directoryClass, $children[0]);
+        $this->assertInstanceOf(DirectoryInterface::class, $children[0]);
         $this->assertEquals($path . "/dir2", $children[0]->getPath());
-        $this->assertInstanceOf($this->directoryClass, $children[1]);
+        $this->assertInstanceOf(DirectoryInterface::class, $children[1]);
         $this->assertEquals($path . "/dir1", $children[1]->getPath());
-        $this->assertInstanceOf($this->fileClass, $children[2]);
+        $this->assertInstanceOf(FileInterface::class, $children[2]);
         $this->assertEquals($path . "/file2", $children[2]->getPath());
-        $this->assertInstanceOf($this->fileClass, $children[3]);
+        $this->assertInstanceOf(FileInterface::class, $children[3]);
         $this->assertEquals($path . "/file1", $children[3]->getPath());
     }
 
@@ -78,17 +77,17 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(Generator::class, $children);
         $children = iterator_to_array($children);
         $this->assertCount(5, $children);
-        $this->assertContainsOnlyInstancesOf(\Aternos\IO\Interfaces\IOElementInterface::class, $children);
+        $this->assertContainsOnlyInstancesOf(IOElementInterface::class, $children);
 
-        $this->assertInstanceOf($this->directoryClass, $children[0]);
+        $this->assertInstanceOf(DirectoryInterface::class, $children[0]);
         $this->assertEquals($path . "/dir2", $children[0]->getPath());
-        $this->assertInstanceOf($this->fileClass, $children[1]);
+        $this->assertInstanceOf(FileInterface::class, $children[1]);
         $this->assertEquals($path . "/dir2/file3", $children[1]->getPath());
-        $this->assertInstanceOf($this->directoryClass, $children[2]);
+        $this->assertInstanceOf(DirectoryInterface::class, $children[2]);
         $this->assertEquals($path . "/dir1", $children[2]->getPath());
-        $this->assertInstanceOf($this->fileClass, $children[3]);
+        $this->assertInstanceOf(FileInterface::class, $children[3]);
         $this->assertEquals($path . "/file2", $children[3]->getPath());
-        $this->assertInstanceOf($this->fileClass, $children[4]);
+        $this->assertInstanceOf(FileInterface::class, $children[4]);
         $this->assertEquals($path . "/file1", $children[4]->getPath());
     }
 
