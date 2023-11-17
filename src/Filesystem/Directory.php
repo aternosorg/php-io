@@ -6,11 +6,9 @@ use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Interfaces\Features\GetChildrenInterface;
-use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use DirectoryIterator;
 use Generator;
-use SplFileInfo;
 
 class Directory extends FilesystemElement implements DirectoryInterface
 {
@@ -28,20 +26,8 @@ class Directory extends FilesystemElement implements DirectoryInterface
                 continue;
             }
 
-            yield $this->getIOElementFromFileInfo($fileInfo);
+            yield static::getIOElementFromPath($fileInfo->getPathname());
         }
-    }
-
-    /**
-     * @param SplFileInfo $fileInfo
-     * @return IOElementInterface
-     */
-    protected function getIOElementFromFileInfo(SplFileInfo $fileInfo): IOElementInterface
-    {
-        if ($fileInfo->isDir()) {
-            return new static($fileInfo->getPathname());
-        }
-        return new File($fileInfo->getPathname());
     }
 
     /**

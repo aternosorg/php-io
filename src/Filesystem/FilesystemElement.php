@@ -11,6 +11,18 @@ abstract class FilesystemElement implements FilesystemInterface, IOElementInterf
 {
     /**
      * @param string $path
+     * @return IOElementInterface
+     */
+    public static function getIOElementFromPath(string $path): IOElementInterface
+    {
+        if (is_dir($path)) {
+            return new Directory($path);
+        }
+        return new File($path);
+    }
+
+    /**
+     * @param string $path
      */
     public function __construct(protected string $path)
     {

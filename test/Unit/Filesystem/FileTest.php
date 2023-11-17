@@ -12,6 +12,7 @@ use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TruncateException;
 use Aternos\IO\Exception\WriteException;
 use Aternos\IO\Filesystem\File;
+use ReflectionException;
 use ReflectionObject;
 
 class FileTest extends FilesystemTestCase
@@ -170,8 +171,31 @@ class FileTest extends FilesystemTestCase
 
         $element->close();
 
+        $this->assertIsClosedResource($file);
+        $null = $reflectionObject->getProperty("fileResource")->getValue($element);
+        $this->assertNull($null);
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     */
+    public function testCloseOnDestruct(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        file_put_contents($path, "test");
+        $element = $this->createElement($path);
+        $element->read(4);
+
+        $reflectionObject = new ReflectionObject($element);
+        $file = $reflectionObject->getProperty("fileResource")->getValue($element);
+        $this->assertIsResource($file);
+
+        $element->__destruct();
+
         $file = $reflectionObject->getProperty("fileResource")->getValue($element);
         $this->assertNull($file);
+
     }
 
     /**
@@ -284,5 +308,30 @@ class FileTest extends FilesystemTestCase
         $this->expectException(MissingPermissionsException::class);
         $this->expectExceptionMessage("Could not open file due to missing permissions (" . $path . ")");
         $element->read(4);
+    }
+
+    /**
+     * @throws IOException
+     * @throws WriteException
+     */
+    public function testSerializeOpenFile(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $element->write("test");
+        $serialized = serialize($element);
+        $this->assertIsString($serialized);
+    }
+
+    /**
+     * @throws CreateFileException
+     */
+    public function testCreate(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->assertFalse(file_exists($path));
+        $element->create();
+        $this->assertTrue(file_exists($path));
     }
 }

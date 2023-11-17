@@ -128,4 +128,13 @@ class DirectoryTest extends FilesystemTestCase
         $element = $this->createElement("/dev/null/test");
         $element->create();
     }
+
+    public function testCreate(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->assertFalse(file_exists($path));
+        $element->create();
+        $this->assertTrue(file_exists($path));
+    }
 }
