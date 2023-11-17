@@ -56,7 +56,7 @@ abstract class FilesystemElement implements FilesystemInterface, IOElementInterf
             }
 
             if (!$allowOutsideElement) {
-                throw new PathOutsideElementException("Path is outside of element: " . $sourcePath . " -> " . $targetPath, $this);
+                throw new PathOutsideElementException("Path is outside of element (" . $sourcePath . " -> " . $targetPath . ")", $this);
             }
             break;
         }

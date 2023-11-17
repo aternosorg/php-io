@@ -2,9 +2,8 @@
 
 namespace Aternos\IO\Test\Unit\Filesystem;
 
-use Aternos\IO\Exception\IOException;
-use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\Exception\MoveException;
+use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\Filesystem\Directory;
 use Aternos\IO\Filesystem\FilesystemElement;
 
@@ -81,6 +80,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $element = $this->createElement($path);
         $directory = new Directory($this->getTmpPath() . "/sub-dir");
         $this->expectException(PathOutsideElementException::class);
+        $this->expectExceptionMessage("Path is outside of element (" . $this->getTmpPath() . "/sub-dir -> " . $path . ")");
         $element->getRelativePathTo($directory);
     }
 
@@ -107,6 +107,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $newPath = $this->getTmpPath() . "/sub-dir/new-test";
         $element->create();
         $this->expectException(MoveException::class);
+        $this->expectExceptionMessage("Could not move element (" . $path . " -> " . $newPath . ")");
         $element->move($newPath);
     }
 
@@ -143,13 +144,6 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertTrue(file_exists($path));
     }
 
-    public function testThrowsExceptionOnFailedCreation(): void
-    {
-        $this->expectException(IOException::class);
-        $element = $this->createElement("/dev/null/test");
-        $element->create();
-    }
-
     public function testDelete(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -167,12 +161,5 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertFalse(file_exists($path));
         $element->delete();
         $this->assertFalse(file_exists($path));
-    }
-
-    public function testThrowsExceptionOnImpossibleDelete(): void
-    {
-        $element = $this->createElement("/dev/null");
-        $this->expectException(IOException::class);
-        $element->delete();
     }
 }

@@ -22,6 +22,6 @@
         "phpunit/phpunit": "^10.4"
     },
     "scripts": {
-        "test": "phpunit --config phpunit.xml"
+        "test": "phpunit --config phpunit.xml --testdox"
     }
 }

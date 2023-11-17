@@ -2,9 +2,11 @@
 
 namespace Aternos\IO\Test\Unit\Filesystem;
 
+use Aternos\IO\Exception\CreateFileException;
+use Aternos\IO\Exception\DeleteException;
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Exception\ReadException;
-use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TruncateException;
@@ -39,6 +41,7 @@ class FileTest extends FilesystemTestCase
         $path = $this->getTmpPath() . "/test";
         $element = $this->createElement($path);
         $this->expectException(StatException::class);
+        $this->expectExceptionMessage("Could not get file size (" . $path . ")");
         $element->getSize();
     }
 
@@ -77,6 +80,7 @@ class FileTest extends FilesystemTestCase
         $reflectionObject = new ReflectionObject($element);
         $reflectionObject->getProperty("fileResource")->setValue($element, fopen($path, "w"));
         $this->expectException(ReadException::class);
+        $this->expectExceptionMessage("Could not read file (" . $path . ")");
         $element->read(4);
     }
 
@@ -87,6 +91,7 @@ class FileTest extends FilesystemTestCase
     {
         $element = $this->createElement("/dev/null/test");
         $this->expectException(IOException::class);
+        $this->expectExceptionMessage("Could not open file (/dev/null/test)");
         $element->read(4);
     }
 
@@ -94,13 +99,14 @@ class FileTest extends FilesystemTestCase
      * @throws ReadException
      * @throws IOException
      */
-    public function testThrowsExceptionOnMissingPermissions(): void
+    public function testThrowsExceptionOnMissingReadPermissions(): void
     {
         $path = $this->getTmpPath() . "/test";
         file_put_contents($path, "test");
         chmod($path, 0222);
         $element = $this->createElement($path);
         $this->expectException(MissingPermissionsException::class);
+        $this->expectExceptionMessage("Could not read file due to missing read permissions (" . $path . ")");
         $element->read(4);
     }
 
@@ -127,6 +133,7 @@ class FileTest extends FilesystemTestCase
         file_put_contents($path, "0123456789");
         $element = $this->createElement($path);
         $this->expectException(SeekException::class);
+        $this->expectExceptionMessage("Could not set file position (" . $path . ")");
         $element->setPosition(-1);
     }
 
@@ -187,6 +194,7 @@ class FileTest extends FilesystemTestCase
     {
         $element = $this->createElement("/dev/null");
         $this->expectException(TruncateException::class);
+        $this->expectExceptionMessage("Could not truncate file (/dev/null)");
         $element->truncate();
     }
 
@@ -213,6 +221,7 @@ class FileTest extends FilesystemTestCase
         $reflectionObject = new ReflectionObject($element);
         $reflectionObject->getProperty("fileResource")->setValue($element, fopen($path, "r"));
         $this->expectException(WriteException::class);
+        $this->expectExceptionMessage("Could not write to file (" . $path . ")");
         $element->write("test");
     }
 
@@ -227,6 +236,53 @@ class FileTest extends FilesystemTestCase
         chmod($path, 0444);
         $element = $this->createElement($path);
         $this->expectException(MissingPermissionsException::class);
+        $this->expectExceptionMessage("Could not write to file due to missing write permissions (" . $path . ")");
         $element->write("test");
+    }
+
+    /**
+     * @throws IOException
+     * @throws WriteException
+     */
+    public function testThrowsExceptionOnMissingWritePermissionsOnParentDirectory(): void
+    {
+        $path = $this->getTmpPath() . "/test/test";
+        mkdir($path, 0777, true);
+        chmod($this->getTmpPath() . "/test", 0444);
+        $element = $this->createElement($path);
+        $this->expectException(MissingPermissionsException::class);
+        $this->expectExceptionMessage("Could not open file due to missing write permissions in parent directory (" . $path . ")");
+        $element->write("test");
+    }
+
+    public function testThrowsExceptionOnImpossibleDelete(): void
+    {
+        $element = $this->createElement("/dev/null");
+        $this->expectException(DeleteException::class);
+        $this->expectExceptionMessage("Could not delete file (/dev/null)");
+        $element->delete();
+    }
+
+    public function testThrowsExceptionOnFailedCreation(): void
+    {
+        $this->expectException(CreateFileException::class);
+        $this->expectExceptionMessage("Could not create file (/dev/null/test)");
+        $element = $this->createElement("/dev/null/test");
+        $element->create();
+    }
+
+    /**
+     * @throws ReadException
+     * @throws IOException
+     */
+    public function testThrowsExceptionOnMissingPermissions(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        file_put_contents($path, "test");
+        chmod($path, 0000);
+        $element = $this->createElement($path);
+        $this->expectException(MissingPermissionsException::class);
+        $this->expectExceptionMessage("Could not open file due to missing permissions (" . $path . ")");
+        $element->read(4);
     }
 }

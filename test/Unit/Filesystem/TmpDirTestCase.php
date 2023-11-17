@@ -29,10 +29,11 @@ abstract class TmpDirTestCase extends TestCase
         if (!file_exists($path)) {
             return;
         }
+
+        if (!is_readable($path) || !is_writable($path)) {
+            chmod($path, 0777);
+        }
         if (is_dir($path)) {
-            if (!is_readable($path)) {
-                chmod($path, 0777);
-            }
             foreach (scandir($path) as $file) {
                 if ($file === "." || $file === "..") {
                     continue;

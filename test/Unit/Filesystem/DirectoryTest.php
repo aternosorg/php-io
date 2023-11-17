@@ -2,6 +2,8 @@
 
 namespace Aternos\IO\Test\Unit\Filesystem;
 
+use Aternos\IO\Exception\CreateDirectoryException;
+use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Filesystem\Directory;
 use Aternos\IO\Interfaces\IOElementInterface;
@@ -53,6 +55,7 @@ class DirectoryTest extends FilesystemTestCase
         chmod($path, 0333);
 
         $this->expectException(MissingPermissionsException::class);
+        $this->expectExceptionMessage("Could not read directory due to missing read permissions (" . $path . ")");
 
         $directory = $this->createElement($path);
         iterator_to_array($directory->getChildren());
@@ -102,10 +105,27 @@ class DirectoryTest extends FilesystemTestCase
         chmod($path, 0333);
 
         $this->expectException(MissingPermissionsException::class);
+        $this->expectExceptionMessage("Could not read directory due to missing read permissions (" . $path . ")");
 
         $directory = $this->createElement($path);
         iterator_to_array($directory->getChildrenRecursive());
 
         chmod($path, 0777);
+    }
+
+    public function testThrowsExceptionOnImpossibleDelete(): void
+    {
+        $element = $this->createElement("/dev/null");
+        $this->expectException(DeleteException::class);
+        $this->expectExceptionMessage("Could not delete directory (/dev/null)");
+        $element->delete();
+    }
+
+    public function testThrowsExceptionOnFailedCreation(): void
+    {
+        $this->expectException(CreateDirectoryException::class);
+        $this->expectExceptionMessage("Could not create directory (/dev/null/test)");
+        $element = $this->createElement("/dev/null/test");
+        $element->create();
     }
 }
