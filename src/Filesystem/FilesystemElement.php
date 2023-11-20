@@ -4,6 +4,9 @@ namespace Aternos\IO\Filesystem;
 
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
+use Aternos\IO\Filesystem\Link\DirectoryLink;
+use Aternos\IO\Filesystem\Link\FileLink;
+use Aternos\IO\Filesystem\Link\Link;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 
@@ -15,6 +18,15 @@ abstract class FilesystemElement implements FilesystemInterface, IOElementInterf
      */
     public static function getIOElementFromPath(string $path): IOElementInterface
     {
+        if (is_link($path)) {
+            if (!file_exists($path)) {
+                return new Link($path);
+            }
+            if (is_dir($path)) {
+                return new DirectoryLink($path);
+            }
+            return new FileLink($path);
+        }
         if (is_dir($path)) {
             return new Directory($path);
         }

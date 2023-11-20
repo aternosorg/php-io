@@ -6,6 +6,9 @@ use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Filesystem\Directory;
+use Aternos\IO\Filesystem\Link\DirectoryLink;
+use Aternos\IO\Filesystem\Link\FileLink;
+use Aternos\IO\Filesystem\Link\Link;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;
@@ -158,5 +161,27 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertTrue(file_exists($path));
         $element->delete();
         $this->assertFalse(file_exists($path));
+    }
+
+    public function testGetChildrenLinks(): void
+    {
+        $path = $this->getTmpPath();
+        touch($path . "/file1");
+        mkdir($path . "/dir1");
+        symlink($path . "/file1", $path . "/link1");
+        symlink($path . "/dir1", $path . "/link2");
+        symlink($path . "/nonexistent", $path . "/link3");
+
+        $directory = $this->createElement($path);
+        $children = $directory->getChildren();
+        $this->assertInstanceOf(Generator::class, $children);
+        $children = iterator_to_array($children);
+        $this->assertCount(5, $children);
+        $this->assertInstanceOf(Link::class, $children[0]);
+        $this->assertEquals($path . "/link3", $children[0]->getPath());
+        $this->assertInstanceOf(DirectoryLink::class, $children[1]);
+        $this->assertEquals($path . "/link2", $children[1]->getPath());
+        $this->assertInstanceOf(FileLink::class, $children[2]);
+        $this->assertEquals($path . "/link1", $children[2]->getPath());
     }
 }
