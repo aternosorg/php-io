@@ -6,10 +6,11 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\Filesystem\FilesystemElement;
+use Aternos\IO\Interfaces\Features\GetTargetPathInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\Link\LinkInterface;
 
-class Link extends FilesystemElement implements LinkInterface
+class Link extends FilesystemElement implements LinkInterface, GetTargetPathInterface
 {
     protected ?IOElementInterface $target = null;
     protected ?bool $existsOverride = null;
@@ -37,13 +38,9 @@ class Link extends FilesystemElement implements LinkInterface
             return $this->target;
         }
 
-        if (!$this->exists()) {
-            throw new GetTargetException("Could not get link target because link does not exist (" . $this->path . ")", $this);
-        }
+        $targetPath = $this->getTargetPath();
 
-        $targetPath = readlink($this->path);
-
-        if (!file_exists($targetPath)) {
+        if (!$this->targetExists()) {
             throw new GetTargetException("Could not get link target because target does not exist (" . $targetPath . ")", $this);
         }
 
@@ -77,5 +74,27 @@ class Link extends FilesystemElement implements LinkInterface
             return $this->existsOverride;
         }
         return is_link($this->path);
+    }
+
+    /**
+     * @throws GetTargetException
+     */
+    public function getTargetPath(): string
+    {
+        if (!$this->exists()) {
+            throw new GetTargetException("Could not get link target because link does not exist (" . $this->path . ")", $this);
+        }
+
+        return readlink($this->path);
+    }
+
+    /**
+     * @throws GetTargetException
+     */
+    public function targetExists(): bool
+    {
+        $targetPath = $this->getTargetPath();
+
+        return file_exists($targetPath) || is_link($targetPath);
     }
 }

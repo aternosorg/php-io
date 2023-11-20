@@ -4,6 +4,7 @@ namespace Aternos\IO\Test\Unit\Filesystem;
 
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\DeleteException;
+use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Filesystem\Directory;
 use Aternos\IO\Filesystem\Link\DirectoryLink;
@@ -12,6 +13,7 @@ use Aternos\IO\Filesystem\Link\Link;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;
+use Aternos\IO\Interfaces\Types\Link\LinkInterface;
 use Generator;
 
 class DirectoryTest extends FilesystemTestCase
@@ -24,6 +26,7 @@ class DirectoryTest extends FilesystemTestCase
 
     /**
      * @throws MissingPermissionsException
+     * @throws GetTargetException
      */
     public function testGetChildren(): void
     {
@@ -51,6 +54,9 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertEquals($path . "/file1", $children[3]->getPath());
     }
 
+    /**
+     * @throws GetTargetException
+     */
     public function testThrowsExceptionOnGetChildrenWithMissingPermissions(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -68,6 +74,7 @@ class DirectoryTest extends FilesystemTestCase
 
     /**
      * @throws MissingPermissionsException
+     * @throws GetTargetException
      */
     public function testGetChildrenRecursive(): void
     {
@@ -100,6 +107,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @return void
      * @throws MissingPermissionsException
+     * @throws GetTargetException
      */
     public function testThrowsExceptionOnGetChildrenRecursiveWithMissingPermissions(): void
     {
@@ -116,6 +124,10 @@ class DirectoryTest extends FilesystemTestCase
         chmod($path, 0777);
     }
 
+    /**
+     * @throws GetTargetException
+     * @throws MissingPermissionsException
+     */
     public function testThrowsExceptionOnImpossibleDelete(): void
     {
         $element = $this->createElement("/dev/null");
@@ -145,7 +157,7 @@ class DirectoryTest extends FilesystemTestCase
     }
 
     /**
-     * @throws DeleteException|MissingPermissionsException
+     * @throws DeleteException|MissingPermissionsException|GetTargetException
      */
     public function testDeleteRecursively(): void
     {
@@ -163,6 +175,10 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertFalse(file_exists($path));
     }
 
+    /**
+     * @throws GetTargetException
+     * @throws MissingPermissionsException
+     */
     public function testGetChildrenLinks(): void
     {
         $path = $this->getTmpPath();
@@ -183,5 +199,116 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertEquals($path . "/link2", $children[1]->getPath());
         $this->assertInstanceOf(FileLink::class, $children[2]);
         $this->assertEquals($path . "/link1", $children[2]->getPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     * @throws MissingPermissionsException
+     */
+    public function testDontFollowLinks(): void
+    {
+        $path = $this->getTmpPath();
+        mkdir($path . "/dir");
+        touch($path . "/dir/file");
+        symlink($path . "/dir", $path . "/link");
+
+        $directory = $this->createElement($path);
+        $children = $directory->getChildrenRecursive(followLinks: false);
+
+        $this->assertInstanceOf(Generator::class, $children);
+        $children = iterator_to_array($children);
+        $this->assertCount(3, $children);
+        $this->assertInstanceOf(LinkInterface::class, $children[0]);
+        $this->assertEquals($path . "/link", $children[0]->getPath());
+        $this->assertInstanceOf(DirectoryInterface::class, $children[1]);
+        $this->assertEquals($path . "/dir", $children[1]->getPath());
+        $this->assertInstanceOf(FileInterface::class, $children[2]);
+        $this->assertEquals($path . "/dir/file", $children[2]->getPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     * @throws MissingPermissionsException
+     */
+    public function testIgnoreOutsideLinks(): void
+    {
+        $path = $this->getTmpPath();
+        touch($path . "/file");
+        mkdir($path . "/dir");
+        symlink($path . "/file", $path . "/dir/link");
+
+        $directory = $this->createElement($path . "/dir");
+        $children = $directory->getChildren();
+        $this->assertInstanceOf(Generator::class, $children);
+        $children = iterator_to_array($children);
+        $this->assertCount(0, $children);
+    }
+
+    /**
+     * @throws GetTargetException
+     * @throws MissingPermissionsException
+     */
+    public function testIgnoreOutsideLinksRecursive(): void
+    {
+        $path = $this->getTmpPath();
+        touch($path . "/file");
+        mkdir($path . "/dir");
+        mkdir($path . "/dir/sub-dir");
+        symlink($path . "/file", $path . "/dir/sub-dir/link");
+
+        $directory = $this->createElement($path . "/dir");
+        $children = $directory->getChildrenRecursive();
+        $this->assertInstanceOf(Generator::class, $children);
+        $children = iterator_to_array($children);
+        $this->assertCount(1, $children);
+        $this->assertInstanceOf(DirectoryInterface::class, $children[0]);
+        $this->assertEquals($path . "/dir/sub-dir", $children[0]->getPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     * @throws MissingPermissionsException
+     */
+    public function testAllowOutsideLinks(): void
+    {
+        $path = $this->getTmpPath();
+        touch($path . "/file");
+        mkdir($path . "/dir");
+        symlink($path . "/file", $path . "/dir/link");
+
+        $directory = $this->createElement($path . "/dir");
+        $children = $directory->getChildren(allowOutsideLinks: true);
+        $this->assertInstanceOf(Generator::class, $children);
+        $children = iterator_to_array($children);
+        $this->assertCount(1, $children);
+        $this->assertInstanceOf(FileLink::class, $children[0]);
+        $this->assertEquals($path . "/dir/link", $children[0]->getPath());
+        $this->assertInstanceOf(FileInterface::class, $children[0]->getTarget());
+        $this->assertEquals($path . "/file", $children[0]->getTarget()->getPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     * @throws MissingPermissionsException
+     */
+    public function testAllowOutsideLinksRecursive(): void
+    {
+        $path = $this->getTmpPath();
+        touch($path . "/file");
+        mkdir($path . "/dir");
+        mkdir($path . "/dir/sub-dir");
+        symlink($path . "/file", $path . "/dir/sub-dir/link");
+
+        $directory = $this->createElement($path . "/dir");
+        $children = $directory->getChildrenRecursive(allowOutsideLinks: true);
+        $this->assertInstanceOf(Generator::class, $children);
+        $children = iterator_to_array($children);
+        $this->assertCount(2, $children);
+        $this->assertInstanceOf(DirectoryInterface::class, $children[0]);
+        $this->assertEquals($path . "/dir/sub-dir", $children[0]->getPath());
+        $this->assertInstanceOf(FileLink::class, $children[1]);
+        $this->assertEquals($path . "/dir/sub-dir/link", $children[1]->getPath());
+        $this->assertInstanceOf(FileInterface::class, $children[1]->getTarget());
+        $this->assertEquals($path . "/file", $children[1]->getTarget()->getPath());
     }
 }

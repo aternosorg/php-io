@@ -10,10 +10,10 @@ interface GetChildrenInterface
     /**
      * @return Generator<IOElementInterface>
      */
-    public function getChildren(): Generator;
+    public function getChildren(bool $allowOutsideLinks = false): Generator;
 
     /**
      * @return Generator<IOElementInterface>
      */
-    public function getChildrenRecursive(): Generator;
+    public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true): Generator;
 }

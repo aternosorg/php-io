@@ -48,19 +48,23 @@ class DirectoryLink extends Link implements DirectoryInterface
     }
 
     /**
-     * @throws GetTargetException
-     */
-    public function getChildren(): Generator
-    {
-        yield from $this->getTarget()->getChildren();
-    }
-
-    /**
+     * @param bool $allowOutsideLinks
      * @return Generator
      * @throws GetTargetException
      */
-    public function getChildrenRecursive(): Generator
+    public function getChildren(bool $allowOutsideLinks = false): Generator
     {
-        yield from $this->getTarget()->getChildrenRecursive();
+        yield from $this->getTarget()->getChildren($allowOutsideLinks);
+    }
+
+    /**
+     * @param bool $allowOutsideLinks
+     * @param bool $followLinks
+     * @return Generator
+     * @throws GetTargetException
+     */
+    public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true): Generator
+    {
+        yield from $this->getTarget()->getChildrenRecursive($allowOutsideLinks, $followLinks);
     }
 }
