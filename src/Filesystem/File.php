@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Filesystem;
 
+use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\CreateFileException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\IOException;
@@ -41,12 +42,17 @@ class File extends FilesystemElement implements FileInterface
 
     /**
      * @return string
-     * @throws MissingPermissionsException
+     * @throws MissingPermissionsException|CreateDirectoryException
      */
     protected function getMode(): string
     {
         if (!file_exists($this->path)) {
-            if (is_writable(dirname($this->path))) {
+            $parentDirectory = new Directory(dirname($this->path));
+            if (!$parentDirectory->exists()) {
+                $parentDirectory->create();
+            }
+
+            if (is_writable($parentDirectory->getPath())) {
                 return "c+b";
             }
             throw new MissingPermissionsException("Could not open file due to missing write permissions in parent directory (" . $this->path . ")", $this);
@@ -138,10 +144,15 @@ class File extends FilesystemElement implements FileInterface
     }
 
     /**
-     * @throws CreateFileException
+     * @throws CreateFileException|CreateDirectoryException
      */
     public function create(): static
     {
+        $parentDirectory = new Directory(dirname($this->path));
+        if (!$parentDirectory->exists()) {
+            $parentDirectory->create();
+        }
+
         if (!@touch($this->path)) {
             $error = error_get_last();
             throw new CreateFileException("Could not create file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);

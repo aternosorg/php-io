@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Test\Unit\Filesystem;
 
+use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\CreateFileException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\IOException;
@@ -325,6 +326,7 @@ class FileTest extends FilesystemTestCase
 
     /**
      * @throws CreateFileException
+     * @throws CreateDirectoryException
      */
     public function testCreate(): void
     {
@@ -333,5 +335,33 @@ class FileTest extends FilesystemTestCase
         $this->assertFalse(file_exists($path));
         $element->create();
         $this->assertTrue(file_exists($path));
+    }
+
+    /**
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     */
+    public function testCreateParentDirectoryOnCreate(): void
+    {
+        $path = $this->getTmpPath() . "/test/test";
+        $element = $this->createElement($path);
+        $this->assertFileDoesNotExist($this->getTmpPath() . "/test/test");
+        $element->create();
+        $this->assertFileExists($this->getTmpPath() . "/test/test");
+        $this->assertDirectoryExists($this->getTmpPath() . "/test");
+    }
+
+    /**
+     * @throws IOException
+     * @throws WriteException
+     */
+    public function testCreateParentDirectoryOnWrite(): void
+    {
+        $path = $this->getTmpPath() . "/test/test";
+        $element = $this->createElement($path);
+        $this->assertFileDoesNotExist($this->getTmpPath() . "/test/test");
+        $element->write("test");
+        $this->assertFileExists($this->getTmpPath() . "/test/test");
+        $this->assertDirectoryExists($this->getTmpPath() . "/test");
     }
 }
