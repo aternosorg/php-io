@@ -21,6 +21,10 @@ class Directory extends FilesystemElement implements DirectoryInterface
             throw new MissingPermissionsException("Could not read directory due to missing read permissions (" . $this->path . ")", $this);
         }
 
+        if (!is_dir($this->path)) {
+            return;
+        }
+
         foreach (new DirectoryIterator($this->path) as $fileInfo) {
             if ($fileInfo->isDot()) {
                 continue;
@@ -60,11 +64,15 @@ class Directory extends FilesystemElement implements DirectoryInterface
 
     /**
      * @throws DeleteException
+     * @throws MissingPermissionsException
      */
     public function delete(): static
     {
         if (!$this->exists()) {
             return $this;
+        }
+        foreach ($this->getChildren() as $child) {
+            $child->delete();
         }
         if (!@rmdir($this->path)) {
             $error = error_get_last();

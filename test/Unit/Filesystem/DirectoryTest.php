@@ -129,6 +129,9 @@ class DirectoryTest extends FilesystemTestCase
         $element->create();
     }
 
+    /**
+     * @throws CreateDirectoryException
+     */
     public function testCreate(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -136,5 +139,24 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertFalse(file_exists($path));
         $element->create();
         $this->assertTrue(file_exists($path));
+    }
+
+    /**
+     * @throws DeleteException|MissingPermissionsException
+     */
+    public function testDeleteRecursively(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        mkdir($path);
+        mkdir($path . "/dir1");
+        mkdir($path . "/dir2");
+        touch($path . "/dir2/file1");
+        touch($path . "/dir2/file2");
+        touch($path . "/file1");
+        touch($path . "/file2");
+        $element = $this->createElement($path);
+        $this->assertTrue(file_exists($path));
+        $element->delete();
+        $this->assertFalse(file_exists($path));
     }
 }
