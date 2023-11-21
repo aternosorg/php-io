@@ -49,4 +49,28 @@ class DeadLinkTest extends LinkTest
         $this->expectExceptionMessage("Could not get link target because of infinite link loop (" . $this->getTmpPath() . "/c" . ")");
         $element->getFinalTargetPath();
     }
+
+    public function testThrowsExceptionOnGetFinalTargetWithTooManyLinks(): void
+    {
+        $path = $this->getTmpPath();
+        for ($i = 0; $i < 41; $i++) {
+            symlink($path . "/" . $i, $path . "/" . ($i + 1));
+        }
+        $element = $this->createElement($path . "/41");
+        $this->expectException(GetTargetException::class);
+        $this->expectExceptionMessage("Could not get link target because of too many levels of links (" . $path . "/41)");
+        $element->getFinalTarget();
+    }
+
+    public function testThrowsExceptionOnGetFinalTargetPathWithTooManyLinks(): void
+    {
+        $path = $this->getTmpPath();
+        for ($i = 0; $i < 41; $i++) {
+            symlink($path . "/" . $i, $path . "/" . ($i + 1));
+        }
+        $element = $this->createElement($path . "/41");
+        $this->expectException(GetTargetException::class);
+        $this->expectExceptionMessage("Could not get link target because of too many levels of links (" . $path . "/41)");
+        $element->getFinalTargetPath();
+    }
 }

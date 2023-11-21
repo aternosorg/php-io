@@ -6,13 +6,13 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\Filesystem\FilesystemElement;
-use Aternos\IO\Interfaces\Features\GetTargetInterface;
 use Aternos\IO\Interfaces\Features\GetTargetPathInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\Link\LinkInterface;
 
 class Link extends FilesystemElement implements LinkInterface, GetTargetPathInterface
 {
+    protected const DEPTH_LIMIT = 40;
     protected ?IOElementInterface $target = null;
     protected ?bool $existsOverride = null;
 
@@ -129,7 +129,9 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
                 return $current;
             }
             $current = $target;
-        } while (true);
+        } while (count($paths) < static::DEPTH_LIMIT);
+
+        throw new GetTargetException("Could not get link target because of too many levels of links (" . $this->getPath() . ")", $this);
     }
 
     /**
