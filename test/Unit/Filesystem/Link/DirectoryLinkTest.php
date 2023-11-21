@@ -58,6 +58,60 @@ class DirectoryLinkTest extends LinkTest
     }
 
     /**
+     * @throws GetTargetException
+     */
+    public function testGetTargetPath(): void
+    {
+        mkdir($this->getTmpPath() . "/test-target");
+        symlink($this->getTmpPath() . "/test-target", $this->getTmpPath() . "/test");
+        $element = $this->createElement($this->getTmpPath() . "/test");
+        $this->assertEquals($this->getTmpPath() . "/test-target", $element->getTargetPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     */
+    public function testGetFinalTargetPath(): void
+    {
+        mkdir($this->getTmpPath() . "/test-target");
+        symlink($this->getTmpPath() . "/test-target", $this->getTmpPath() . "/test1");
+        symlink($this->getTmpPath() . "/test1", $this->getTmpPath() . "/test2");
+        symlink($this->getTmpPath() . "/test2", $this->getTmpPath() . "/test3");
+        $element = $this->createElement($this->getTmpPath() . "/test3");
+        $this->assertEquals($this->getTmpPath() . "/test-target", $element->getFinalTargetPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     */
+    public function testGetTargetOnLinkChainGetsLink(): void
+    {
+        mkdir($this->getTmpPath() . "/test-target");
+        symlink($this->getTmpPath() . "/test-target", $this->getTmpPath() . "/test1");
+        symlink($this->getTmpPath() . "/test1", $this->getTmpPath() . "/test2");
+        symlink($this->getTmpPath() . "/test2", $this->getTmpPath() . "/test3");
+        $element = $this->createElement($this->getTmpPath() . "/test3");
+        $target = $element->getTarget();
+        $this->assertInstanceOf(DirectoryLink::class, $target);
+        $this->assertEquals($this->getTmpPath() . "/test2", $target->getPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     */
+    public function testGetFinalTarget(): void
+    {
+        mkdir($this->getTmpPath() . "/test-target");
+        symlink($this->getTmpPath() . "/test-target", $this->getTmpPath() . "/test1");
+        symlink($this->getTmpPath() . "/test1", $this->getTmpPath() . "/test2");
+        symlink($this->getTmpPath() . "/test2", $this->getTmpPath() . "/test3");
+        $element = $this->createElement($this->getTmpPath() . "/test3");
+        $target = $element->getFinalTarget();
+        $this->assertInstanceOf(Directory::class, $target);
+        $this->assertEquals($this->getTmpPath() . "/test-target", $target->getPath());
+    }
+
+    /**
      * @throws SetTargetException
      * @throws DeleteException
      */

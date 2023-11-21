@@ -6,6 +6,7 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\Filesystem\FilesystemElement;
+use Aternos\IO\Interfaces\Features\GetTargetInterface;
 use Aternos\IO\Interfaces\Features\GetTargetPathInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\Link\LinkInterface;
@@ -96,5 +97,36 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
         $targetPath = $this->getTargetPath();
 
         return file_exists($targetPath) || is_link($targetPath);
+    }
+
+    /**
+     * @return IOElementInterface
+     * @throws GetTargetException
+     */
+    public function getFinalTarget(): IOElementInterface
+    {
+        $target = $this->getTarget();
+        if ($target instanceof GetTargetInterface) {
+            return $target->getFinalTarget();
+        } else {
+            return $target;
+        }
+    }
+
+    /**
+     * @return string
+     * @throws GetTargetException
+     */
+    public function getFinalTargetPath(): string
+    {
+        if (!$this->targetExists()) {
+            return $this->getTargetPath();
+        }
+        $target = $this->getTarget();
+        if ($target instanceof GetTargetPathInterface) {
+            return $target->getFinalTargetPath();
+        } else {
+            return $target->getPath();
+        }
     }
 }

@@ -10,4 +10,9 @@ interface GetTargetInterface
      * @return IOElementInterface
      */
     public function getTarget(): IOElementInterface;
+
+    /**
+     * @return IOElementInterface
+     */
+    public function getFinalTarget(): IOElementInterface;
 }
