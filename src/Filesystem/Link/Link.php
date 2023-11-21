@@ -105,12 +105,31 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
      */
     public function getFinalTarget(): IOElementInterface
     {
-        $target = $this->getTarget();
-        if ($target instanceof GetTargetInterface) {
-            return $target->getFinalTarget();
-        } else {
-            return $target;
-        }
+        return $this->getFinalLink()->getTarget();
+    }
+
+    /**
+     * @throws GetTargetException
+     */
+    protected function getFinalLink(): LinkInterface
+    {
+        $paths = [];
+        $current = $this;
+        do {
+            if (in_array($current->getPath(), $paths)) {
+                throw new GetTargetException("Could not get link target because of infinite link loop (" . $this->getPath() . ")", $this);
+            }
+            $paths[] = $current->getPath();
+
+            if (!$current->targetExists()) {
+                return $current;
+            }
+            $target = $current->getTarget();
+            if (!$target instanceof LinkInterface) {
+                return $current;
+            }
+            $current = $target;
+        } while (true);
     }
 
     /**
@@ -119,14 +138,6 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
      */
     public function getFinalTargetPath(): string
     {
-        if (!$this->targetExists()) {
-            return $this->getTargetPath();
-        }
-        $target = $this->getTarget();
-        if ($target instanceof GetTargetPathInterface) {
-            return $target->getFinalTargetPath();
-        } else {
-            return $target->getPath();
-        }
+        return $this->getFinalLink()->getTargetPath();
     }
 }
