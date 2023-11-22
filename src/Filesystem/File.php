@@ -206,16 +206,6 @@ class File extends FilesystemElement implements FileInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function __serialize(): array
-    {
-        return [
-            "path" => $this->path
-        ];
-    }
-
     public function __destruct()
     {
         $this->close();

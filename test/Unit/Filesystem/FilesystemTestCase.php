@@ -184,4 +184,13 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $serialized = serialize($element);
         $this->assertIsString($serialized);
     }
+
+    public function testSerializeContainsPath(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $serialized = $element->__serialize();
+        $this->assertArrayHasKey("path", $serialized);
+        $this->assertEquals($path, $serialized["path"]);
+    }
 }

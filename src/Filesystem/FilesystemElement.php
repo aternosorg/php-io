@@ -115,4 +115,14 @@ abstract class FilesystemElement implements FilesystemInterface, IOElementInterf
     {
         return file_exists($this->path);
     }
+
+    /**
+     * @return string[]
+     */
+    public function __serialize(): array
+    {
+        return [
+            "path" => $this->path
+        ];
+    }
 }

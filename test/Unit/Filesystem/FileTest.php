@@ -364,4 +364,14 @@ class FileTest extends FilesystemTestCase
         $this->assertFileExists($this->getTmpPath() . "/test/test");
         $this->assertDirectoryExists($this->getTmpPath() . "/test");
     }
+
+    public function testSerializeDoesNotContainFileResource(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $serialized = $element->__serialize();
+        $this->assertArrayHasKey("path", $serialized);
+        $this->assertEquals($path, $serialized["path"]);
+        $this->assertArrayNotHasKey("fileResource", $serialized);
+    }
 }

@@ -142,4 +142,12 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     {
         return $this->getFinalLink()->getTargetPath();
     }
+
+    public function __serialize(): array
+    {
+        return [
+            ...parent::__serialize(),
+            "target" => $this->target
+        ];
+    }
 }

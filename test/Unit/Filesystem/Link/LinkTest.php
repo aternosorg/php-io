@@ -75,4 +75,12 @@ class LinkTest extends FilesystemTestCase
         $this->create($element);
         $element->getTarget();
     }
+
+    public function testSerializeContainsTarget(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $serialized = $element->__serialize();
+        $this->assertArrayHasKey("target", $serialized);
+    }
 }
