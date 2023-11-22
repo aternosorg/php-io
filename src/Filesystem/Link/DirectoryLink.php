@@ -60,11 +60,12 @@ class DirectoryLink extends Link implements DirectoryInterface
     /**
      * @param bool $allowOutsideLinks
      * @param bool $followLinks
+     * @param int $currentDepth
      * @return Generator
      * @throws GetTargetException
      */
-    public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true): Generator
+    public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true, int $currentDepth = 0): Generator
     {
-        yield from $this->getTarget()->getChildrenRecursive($allowOutsideLinks, $followLinks);
+        yield from $this->getTarget()->getChildrenRecursive($allowOutsideLinks, $followLinks, $currentDepth);
     }
 }

@@ -15,5 +15,5 @@ interface GetChildrenInterface
     /**
      * @return Generator<IOElementInterface>
      */
-    public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true): Generator;
+    public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true, int $currentDepth = 0): Generator;
 }

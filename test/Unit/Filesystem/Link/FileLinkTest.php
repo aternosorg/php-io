@@ -5,7 +5,6 @@ namespace Aternos\IO\Test\Unit\Filesystem\Link;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\IOException;
-use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\Filesystem\Directory;
 use Aternos\IO\Filesystem\File;

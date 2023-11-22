@@ -6,18 +6,18 @@ use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\MissingPermissionsException;
-use Aternos\IO\Filesystem\Link\DirectoryLink;
-use Aternos\IO\Filesystem\Link\FileLink;
+use Aternos\IO\Filesystem\Link\Link;
 use Aternos\IO\Interfaces\Features\GetChildrenInterface;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\Features\GetTargetInterface;
-use Aternos\IO\Interfaces\Features\GetTargetPathInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use DirectoryIterator;
 use Generator;
 
 class Directory extends FilesystemElement implements DirectoryInterface
 {
+    public const MAX_DEPTH = 100;
+
     /**
      * @param bool $allowOutsideLinks
      * @return Generator<FilesystemInterface>
@@ -50,19 +50,24 @@ class Directory extends FilesystemElement implements DirectoryInterface
     /**
      * @param bool $allowOutsideLinks
      * @param bool $followLinks
+     * @param int $currentDepth
      * @return Generator
-     * @throws MissingPermissionsException
      * @throws GetTargetException
+     * @throws MissingPermissionsException
      */
-    public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true): Generator
+    public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true, int $currentDepth = 0): Generator
     {
+        $currentDepth++;
         foreach ($this->getChildren($allowOutsideLinks) as $child) {
             yield $child;
             if ($child instanceof GetTargetInterface && !$followLinks) {
                 continue;
             }
             if ($child instanceof GetChildrenInterface) {
-                foreach ($child->getChildrenRecursive(true, $followLinks) as $subChild) {
+                if ($currentDepth >= static::MAX_DEPTH) {
+                    continue;
+                }
+                foreach ($child->getChildrenRecursive(true, $followLinks, $currentDepth) as $subChild) {
                     if (!$allowOutsideLinks && !$this->isElementInDirectory($subChild)) {
                         continue;
                     }
@@ -79,13 +84,40 @@ class Directory extends FilesystemElement implements DirectoryInterface
      */
     protected function isElementInDirectory(GetPathInterface $element): bool
     {
-        if ($element instanceof FileLink || $element instanceof DirectoryLink) {
-            return $this->isElementInDirectory($element->getTarget());
-        }
-        if ($element instanceof GetTargetPathInterface) {
-            return $this->isPathInDirectory($element->getTargetPath());
+        if ($element instanceof Link) {
+            return $this->isLinkInDirectory($element);
         }
         return $this->isPathInDirectory($element->getPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     */
+    protected function isLinkInDirectory(Link $link): bool
+    {
+        $paths = [];
+        $current = $link;
+        do {
+            if (in_array($current->getPath(), $paths)) {
+                return false;
+            }
+            $paths[] = $current->getPath();
+
+            if (!$this->isPathInDirectory($current->getPath())) {
+                return false;
+            }
+
+            if (!$current instanceof Link) {
+                return true;
+            }
+
+            if (!$current->targetExists()) {
+                return $this->isPathInDirectory($current->getTargetPath());
+            }
+
+            $current = $current->getTarget();
+        } while (count($paths) < Link::DEPTH_LIMIT);
+        return false;
     }
 
     /**
