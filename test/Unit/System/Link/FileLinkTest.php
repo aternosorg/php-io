@@ -1,15 +1,15 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem\Link;
+namespace Aternos\IO\Test\Unit\System\Link;
 
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SetTargetException;
-use Aternos\IO\Filesystem\Directory\Directory;
-use Aternos\IO\Filesystem\File\File;
-use Aternos\IO\Filesystem\Link\FileLink;
+use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\File\File;
+use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\Interfaces\Types\FileInterface;
 use ReflectionException;
 use ReflectionObject;
@@ -175,13 +175,13 @@ class FileLinkTest extends LinkTest
         $target = $element->getTarget();
         $element->read(4);
         $reflectionObject = new ReflectionObject($target);
-        $file = $reflectionObject->getProperty("fileResource")->getValue($target);
+        $file = $reflectionObject->getProperty("socketResource")->getValue($target);
         $this->assertIsResource($file);
 
         $element->close();
 
         $this->assertIsClosedResource($file);
-        $null = $reflectionObject->getProperty("fileResource")->getValue($target);
+        $null = $reflectionObject->getProperty("socketResource")->getValue($target);
         $this->assertNull($null);
     }
 

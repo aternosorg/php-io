@@ -1,12 +1,12 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem\Link;
+namespace Aternos\IO\Test\Unit\System\Link;
 
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
-use Aternos\IO\Filesystem\FilesystemInterface;
-use Aternos\IO\Filesystem\Link\Link;
-use Aternos\IO\Test\Unit\Filesystem\FilesystemTestCase;
+use Aternos\IO\System\FilesystemInterface;
+use Aternos\IO\System\Link\Link;
+use Aternos\IO\Test\Unit\System\FilesystemTestCase;
 use ReflectionException;
 use ReflectionObject;
 

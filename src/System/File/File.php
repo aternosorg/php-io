@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Filesystem\File;
+namespace Aternos\IO\System\File;
 
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\CreateFileException;
@@ -8,38 +8,45 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Exception\ReadException;
-use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
-use Aternos\IO\Exception\TruncateException;
 use Aternos\IO\Exception\WriteException;
-use Aternos\IO\Filesystem\Directory\Directory;
-use Aternos\IO\Filesystem\FilesystemElement;
+use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\FilesystemElement;
 use Aternos\IO\Interfaces\Types\FileInterface;
+use Aternos\IO\System\Socket\Traits\CloseSocketTrait;
+use Aternos\IO\System\Socket\Traits\GetSocketPositionTrait;
+use Aternos\IO\System\Socket\Traits\IsEndOfFileSocketTrait;
+use Aternos\IO\System\Socket\Traits\ReadSocketTrait;
+use Aternos\IO\System\Socket\Traits\SetSocketPositionTrait;
+use Aternos\IO\System\Socket\Traits\TruncateSocketTrait;
+use Aternos\IO\System\Socket\Traits\WriteSocketTrait;
 
 class File extends FilesystemElement implements FileInterface
 {
-    /**
-     * @var resource
-     */
-    protected mixed $fileResource = null;
+    use CloseSocketTrait,
+        GetSocketPositionTrait,
+        IsEndOfFileSocketTrait,
+        ReadSocketTrait,
+        SetSocketPositionTrait,
+        TruncateSocketTrait,
+        WriteSocketTrait {
+        write as traitWrite;
+        read as traitRead;
+    }
 
     /**
      * @throws IOException
      */
-    protected function getFileResource(): mixed
+    protected function openSocketResource(): mixed
     {
-        if ($this->fileResource) {
-            return $this->fileResource;
-        }
+        $resource = @fopen($this->path, $this->getMode());
 
-        $this->fileResource = @fopen($this->path, $this->getMode());
-
-        if (!$this->fileResource) {
+        if (!$resource) {
             $error = error_get_last();
             throw new IOException("Could not open file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
         }
 
-        return $this->fileResource;
+        return $resource;
     }
 
     /**
@@ -71,25 +78,6 @@ class File extends FilesystemElement implements FileInterface
         throw new MissingPermissionsException("Could not open file due to missing permissions (" . $this->path . ")", $this);
     }
 
-    public function close(): static
-    {
-        if ($this->fileResource) {
-            @fclose($this->fileResource);
-            $this->fileResource = null;
-        }
-        return $this;
-    }
-
-    /**
-     * @throws IOException
-     */
-    public function getPosition(): int
-    {
-        $file = $this->getFileResource();
-        // According to the documentation, this can return false, but I don't know how.
-        return @ftell($file);
-    }
-
     /**
      * @throws StatException
      * @throws IOException
@@ -115,32 +103,30 @@ class File extends FilesystemElement implements FileInterface
      */
     public function read(int $length): string
     {
-        if ($length === 0) {
-            return "";
-        }
-        $file = $this->getFileResource();
-        $buffer = @fread($file, $length);
-        if ($buffer === false) {
+        try {
+            return $this->traitRead($length);
+        } catch (ReadException $exception) {
             if (!is_readable($this->path)) {
-                throw new MissingPermissionsException("Could not read file due to missing read permissions (" . $this->path . ")", $this);
+                $this->throwException("Could not read from {type} due to missing read permissions", MissingPermissionsException::class);
             }
-
-            $error = error_get_last();
-            throw new ReadException("Could not read file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+            throw $exception;
         }
-        return $buffer;
     }
+
 
     /**
      * @throws IOException
-     * @throws SeekException
+     * @throws WriteException
      */
-    public function setPosition(int $position): static
+    public function write(string $buffer): static
     {
-        $file = $this->getFileResource();
-        if (@fseek($file, $position) !== 0) {
-            $error = error_get_last();
-            throw new SeekException("Could not set file position (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        try {
+            $this->traitWrite($buffer);
+        } catch (WriteException $exception) {
+            if (!is_writable($this->path)) {
+                $this->throwException("Could not write to {type} due to missing write permissions", MissingPermissionsException::class);
+            }
+            throw $exception;
         }
         return $this;
     }
@@ -177,47 +163,25 @@ class File extends FilesystemElement implements FileInterface
         return $this;
     }
 
-
-    /**
-     * @throws IOException
-     * @throws TruncateException
-     */
-    public function truncate(int $size = 0): static
-    {
-        if (!@ftruncate($this->getFileResource(), $size)) {
-            $error = error_get_last();
-            throw new TruncateException("Could not truncate file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
-        }
-        return $this;
-    }
-
-    /**
-     * @throws IOException
-     * @throws WriteException
-     */
-    public function write(string $buffer): static
-    {
-        if (@fwrite($this->getFileResource(), $buffer) === false) {
-            if (!is_writable($this->path)) {
-                throw new MissingPermissionsException("Could not write to file due to missing write permissions (" . $this->path . ")", $this);
-            }
-
-            $error = error_get_last();
-            throw new WriteException("Could not write to file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
-        }
-        return $this;
-    }
-
     public function __destruct()
     {
         $this->close();
     }
 
+
     /**
-     * @throws IOException
+     * @return string
      */
-    public function isEndOfFile(): bool
+    protected function getTypeForErrors(): string
     {
-        return feof($this->getFileResource());
+        return "file";
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getErrorContext(): ?string
+    {
+        return $this->path;
     }
 }

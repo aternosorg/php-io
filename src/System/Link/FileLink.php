@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Filesystem\Link;
+namespace Aternos\IO\System\Link;
 
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;

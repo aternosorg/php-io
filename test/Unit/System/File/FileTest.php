@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem\File;
+namespace Aternos\IO\Test\Unit\System\File;
 
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\CreateFileException;
@@ -12,8 +12,9 @@ use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TruncateException;
 use Aternos\IO\Exception\WriteException;
-use Aternos\IO\Filesystem\File\File;
-use Aternos\IO\Test\Unit\Filesystem\FilesystemTestCase;
+use Aternos\IO\System\File\File;
+use Aternos\IO\Test\Unit\System\FilesystemTestCase;
+use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use ReflectionObject;
 
 class FileTest extends FilesystemTestCase
@@ -80,9 +81,9 @@ class FileTest extends FilesystemTestCase
         $element = $this->createElement($path);
         file_put_contents($path, "test");
         $reflectionObject = new ReflectionObject($element);
-        $reflectionObject->getProperty("fileResource")->setValue($element, fopen($path, "w"));
+        $reflectionObject->getProperty("socketResource")->setValue($element, fopen($path, "w"));
         $this->expectException(ReadException::class);
-        $this->expectExceptionMessage("Could not read file (" . $path . ")");
+        $this->expectExceptionMessage("Could not read from file (" . $path . ")");
         $element->read(4);
     }
 
@@ -108,7 +109,7 @@ class FileTest extends FilesystemTestCase
         chmod($path, 0222);
         $element = $this->createElement($path);
         $this->expectException(MissingPermissionsException::class);
-        $this->expectExceptionMessage("Could not read file due to missing read permissions (" . $path . ")");
+        $this->expectExceptionMessage("Could not read from file due to missing read permissions (" . $path . ")");
         $element->read(4);
     }
 
@@ -167,13 +168,13 @@ class FileTest extends FilesystemTestCase
         $element->read(4);
 
         $reflectionObject = new ReflectionObject($element);
-        $file = $reflectionObject->getProperty("fileResource")->getValue($element);
+        $file = $reflectionObject->getProperty("socketResource")->getValue($element);
         $this->assertIsResource($file);
 
         $element->close();
 
         $this->assertIsClosedResource($file);
-        $null = $reflectionObject->getProperty("fileResource")->getValue($element);
+        $null = $reflectionObject->getProperty("socketResource")->getValue($element);
         $this->assertNull($null);
     }
 
@@ -189,12 +190,12 @@ class FileTest extends FilesystemTestCase
         $element->read(4);
 
         $reflectionObject = new ReflectionObject($element);
-        $file = $reflectionObject->getProperty("fileResource")->getValue($element);
+        $file = $reflectionObject->getProperty("socketResource")->getValue($element);
         $this->assertIsResource($file);
 
         $element->__destruct();
 
-        $file = $reflectionObject->getProperty("fileResource")->getValue($element);
+        $file = $reflectionObject->getProperty("socketResource")->getValue($element);
         $this->assertNull($file);
 
     }
@@ -244,7 +245,7 @@ class FileTest extends FilesystemTestCase
         $element = $this->createElement($path);
         file_put_contents($path, "test");
         $reflectionObject = new ReflectionObject($element);
-        $reflectionObject->getProperty("fileResource")->setValue($element, fopen($path, "r"));
+        $reflectionObject->getProperty("socketResource")->setValue($element, fopen($path, "r"));
         $this->expectException(WriteException::class);
         $this->expectExceptionMessage("Could not write to file (" . $path . ")");
         $element->write("test");
@@ -372,7 +373,7 @@ class FileTest extends FilesystemTestCase
         $serialized = $element->__serialize();
         $this->assertArrayHasKey("path", $serialized);
         $this->assertEquals($path, $serialized["path"]);
-        $this->assertArrayNotHasKey("fileResource", $serialized);
+        $this->assertArrayNotHasKey("socketResource", $serialized);
     }
 
     /**
@@ -387,5 +388,18 @@ class FileTest extends FilesystemTestCase
         $this->assertFalse($element->isEndOfFile());
         $element->read(5);
         $this->assertTrue($element->isEndOfFile());
+    }
+
+    #[WithoutErrorHandler]
+    public function testSocketThrowExceptionIncludesPreviousPHPError(): void
+    {
+        $element = $this->createElement($this->getTmpPath() . "/test");
+        $reflectionObject = new ReflectionObject($element);
+        $throwExceptionMethod = $reflectionObject->getMethod("throwException");
+
+        @trigger_error("warning", E_USER_WARNING);
+        $this->expectException(IOException::class);
+        $this->expectExceptionMessage("Test: warning (" . $this->getTmpPath() . "/test)");
+        $throwExceptionMethod->invoke($element, "Test");
     }
 }

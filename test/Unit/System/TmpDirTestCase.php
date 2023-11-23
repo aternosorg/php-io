@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem;
+namespace Aternos\IO\Test\Unit\System;
 
 use PHPUnit\Framework\TestCase;
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem\Link;
+namespace Aternos\IO\Test\Unit\System\Link;
 
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Exception\SetTargetException;
-use Aternos\IO\Filesystem\Directory\Directory;
-use Aternos\IO\Filesystem\File\File;
-use Aternos\IO\Filesystem\Link\DirectoryLink;
+use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\File\File;
+use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;

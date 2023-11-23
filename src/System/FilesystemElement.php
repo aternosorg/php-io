@@ -1,14 +1,14 @@
 <?php
 
-namespace Aternos\IO\Filesystem;
+namespace Aternos\IO\System;
 
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
-use Aternos\IO\Filesystem\Directory\Directory;
-use Aternos\IO\Filesystem\File\File;
-use Aternos\IO\Filesystem\Link\DirectoryLink;
-use Aternos\IO\Filesystem\Link\FileLink;
-use Aternos\IO\Filesystem\Link\Link;
+use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\File\File;
+use Aternos\IO\System\Link\DirectoryLink;
+use Aternos\IO\System\Link\FileLink;
+use Aternos\IO\System\Link\Link;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 

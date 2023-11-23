@@ -1,12 +1,12 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem;
+namespace Aternos\IO\Test\Unit\System;
 
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
-use Aternos\IO\Filesystem\Directory\Directory;
-use Aternos\IO\Filesystem\FilesystemElement;
-use Aternos\IO\Filesystem\FilesystemInterface;
+use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\FilesystemElement;
+use Aternos\IO\System\FilesystemInterface;
 use Aternos\IO\Interfaces\Features\CreateInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 

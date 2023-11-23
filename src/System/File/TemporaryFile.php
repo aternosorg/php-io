@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Filesystem\File;
+namespace Aternos\IO\System\File;
 
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\IOException;

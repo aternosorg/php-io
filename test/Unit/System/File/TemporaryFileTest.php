@@ -1,12 +1,12 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem\File;
+namespace Aternos\IO\Test\Unit\System\File;
 
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\WriteException;
-use Aternos\IO\Filesystem\File\TemporaryFile;
+use Aternos\IO\System\File\TemporaryFile;
 use PHPUnit\Framework\TestCase;
 
 class TemporaryFileTest extends TestCase

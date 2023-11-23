@@ -1,20 +1,20 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem\Directory;
+namespace Aternos\IO\Test\Unit\System\Directory;
 
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\MissingPermissionsException;
-use Aternos\IO\Filesystem\Directory\Directory;
-use Aternos\IO\Filesystem\Link\DirectoryLink;
-use Aternos\IO\Filesystem\Link\FileLink;
-use Aternos\IO\Filesystem\Link\Link;
+use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\Link\DirectoryLink;
+use Aternos\IO\System\Link\FileLink;
+use Aternos\IO\System\Link\Link;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;
 use Aternos\IO\Interfaces\Types\Link\LinkInterface;
-use Aternos\IO\Test\Unit\Filesystem\FilesystemTestCase;
+use Aternos\IO\Test\Unit\System\FilesystemTestCase;
 use Generator;
 
 class DirectoryTest extends FilesystemTestCase
