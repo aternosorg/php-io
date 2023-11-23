@@ -4,6 +4,8 @@ namespace Aternos\IO\Filesystem;
 
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
+use Aternos\IO\Filesystem\Directory\Directory;
+use Aternos\IO\Filesystem\File\File;
 use Aternos\IO\Filesystem\Link\DirectoryLink;
 use Aternos\IO\Filesystem\Link\FileLink;
 use Aternos\IO\Filesystem\Link\Link;

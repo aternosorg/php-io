@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Filesystem;
+namespace Aternos\IO\Test\Unit\Filesystem\File;
 
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\CreateFileException;
@@ -12,8 +12,8 @@ use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TruncateException;
 use Aternos\IO\Exception\WriteException;
-use Aternos\IO\Filesystem\File;
-use ReflectionException;
+use Aternos\IO\Filesystem\File\File;
+use Aternos\IO\Test\Unit\Filesystem\FilesystemTestCase;
 use ReflectionObject;
 
 class FileTest extends FilesystemTestCase
@@ -373,5 +373,19 @@ class FileTest extends FilesystemTestCase
         $this->assertArrayHasKey("path", $serialized);
         $this->assertEquals($path, $serialized["path"]);
         $this->assertArrayNotHasKey("fileResource", $serialized);
+    }
+
+    /**
+     * @throws ReadException
+     * @throws IOException
+     */
+    public function testCheckEndOfFile(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        file_put_contents($path, "test");
+        $element = $this->createElement($path);
+        $this->assertFalse($element->isEndOfFile());
+        $element->read(5);
+        $this->assertTrue($element->isEndOfFile());
     }
 }

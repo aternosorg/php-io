@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Filesystem;
+namespace Aternos\IO\Filesystem\File;
 
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\CreateFileException;
@@ -12,6 +12,8 @@ use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TruncateException;
 use Aternos\IO\Exception\WriteException;
+use Aternos\IO\Filesystem\Directory\Directory;
+use Aternos\IO\Filesystem\FilesystemElement;
 use Aternos\IO\Interfaces\Types\FileInterface;
 
 class File extends FilesystemElement implements FileInterface
@@ -209,5 +211,13 @@ class File extends FilesystemElement implements FileInterface
     public function __destruct()
     {
         $this->close();
+    }
+
+    /**
+     * @throws IOException
+     */
+    public function isEndOfFile(): bool
+    {
+        return feof($this->getFileResource());
     }
 }

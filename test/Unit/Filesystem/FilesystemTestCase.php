@@ -4,7 +4,7 @@ namespace Aternos\IO\Test\Unit\Filesystem;
 
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
-use Aternos\IO\Filesystem\Directory;
+use Aternos\IO\Filesystem\Directory\Directory;
 use Aternos\IO\Filesystem\FilesystemElement;
 use Aternos\IO\Filesystem\FilesystemInterface;
 use Aternos\IO\Interfaces\Features\CreateInterface;

@@ -3,7 +3,7 @@
 namespace Aternos\IO\Test\Unit\Exception;
 
 use Aternos\IO\Exception\IOException;
-use Aternos\IO\Filesystem\File;
+use Aternos\IO\Filesystem\File\File;
 use PHPUnit\Framework\TestCase;
 
 class IOExceptionTest extends TestCase

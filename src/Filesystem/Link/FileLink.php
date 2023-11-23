@@ -103,4 +103,12 @@ class FileLink extends Link implements FileLinkInterface
         $this->getTarget()->write($buffer);
         return $this;
     }
+
+    /**
+     * @throws GetTargetException
+     */
+    public function isEndOfFile(): bool
+    {
+        return $this->getTarget()->isEndOfFile();
+    }
 }

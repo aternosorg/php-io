@@ -5,9 +5,10 @@ namespace Aternos\IO\Test\Unit\Filesystem\Link;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\IOException;
+use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SetTargetException;
-use Aternos\IO\Filesystem\Directory;
-use Aternos\IO\Filesystem\File;
+use Aternos\IO\Filesystem\Directory\Directory;
+use Aternos\IO\Filesystem\File\File;
 use Aternos\IO\Filesystem\Link\FileLink;
 use Aternos\IO\Interfaces\Types\FileInterface;
 use ReflectionException;
@@ -288,5 +289,19 @@ class FileLinkTest extends LinkTest
         $element->setTarget(new File($targetPath));
         $element->truncate(5);
         $this->assertEquals("01234", file_get_contents($targetPath));
+    }
+
+    /**
+     * @throws IOException
+     */
+    public function testCheckEndOfFile(): void
+    {
+        $targetPath = $this->getTmpPath() . "/test-target";
+        file_put_contents($targetPath, "test");
+        symlink($targetPath, $this->getTmpPath() . "/test");
+        $element = $this->createElement($this->getTmpPath() . "/test");
+        $this->assertFalse($element->isEndOfFile());
+        $element->read(5);
+        $this->assertTrue($element->isEndOfFile());
     }
 }
