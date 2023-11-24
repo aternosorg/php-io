@@ -15,6 +15,7 @@ use Aternos\IO\Exception\WriteException;
 use Aternos\IO\System\File\File;
 use Aternos\IO\Test\Unit\System\FilesystemTestCase;
 use PHPUnit\Framework\Attributes\WithoutErrorHandler;
+use ReflectionException;
 use ReflectionObject;
 
 class FileTest extends FilesystemTestCase
@@ -308,7 +309,7 @@ class FileTest extends FilesystemTestCase
         chmod($path, 0000);
         $element = $this->createElement($path);
         $this->expectException(MissingPermissionsException::class);
-        $this->expectExceptionMessage("Could not open file due to missing permissions (" . $path . ")");
+        $this->expectExceptionMessage("Could not open file due to missing read and write permissions (" . $path . ")");
         $element->read(4);
     }
 
@@ -328,6 +329,7 @@ class FileTest extends FilesystemTestCase
     /**
      * @throws CreateFileException
      * @throws CreateDirectoryException
+     * @throws IOException
      */
     public function testCreate(): void
     {
@@ -341,6 +343,7 @@ class FileTest extends FilesystemTestCase
     /**
      * @throws CreateDirectoryException
      * @throws CreateFileException
+     * @throws IOException
      */
     public function testCreateParentDirectoryOnCreate(): void
     {
@@ -390,6 +393,9 @@ class FileTest extends FilesystemTestCase
         $this->assertTrue($element->isEndOfFile());
     }
 
+    /**
+     * @throws ReflectionException
+     */
     #[WithoutErrorHandler]
     public function testSocketThrowExceptionIncludesPreviousPHPError(): void
     {

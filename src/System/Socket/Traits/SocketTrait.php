@@ -40,10 +40,11 @@ trait SocketTrait
     }
 
     /**
+     * @template T of IOException
      * @param string $message
-     * @param class-string<IOException> $type
+     * @param class-string<T> $type
      * @return void
-     * @throws IOException
+     * @throws T
      */
     protected function throwException(string $message, string $type = IOException::class): void
     {

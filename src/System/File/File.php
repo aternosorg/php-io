@@ -21,6 +21,11 @@ use Aternos\IO\System\Socket\Traits\SetSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\TruncateSocketTrait;
 use Aternos\IO\System\Socket\Traits\WriteSocketTrait;
 
+/**
+ * Class File
+ *
+ * Represents a file object.
+ */
 class File extends FilesystemElement implements FileInterface
 {
     use CloseSocketTrait,
@@ -42,8 +47,7 @@ class File extends FilesystemElement implements FileInterface
         $resource = @fopen($this->path, $this->getMode());
 
         if (!$resource) {
-            $error = error_get_last();
-            throw new IOException("Could not open file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+            $this->throwException("Could not open {type}", IOException::class);
         }
 
         return $resource;
@@ -51,7 +55,7 @@ class File extends FilesystemElement implements FileInterface
 
     /**
      * @return string
-     * @throws MissingPermissionsException|CreateDirectoryException
+     * @throws MissingPermissionsException|CreateDirectoryException|IOException
      */
     protected function getMode(): string
     {
@@ -64,7 +68,7 @@ class File extends FilesystemElement implements FileInterface
             if (is_writable($parentDirectory->getPath())) {
                 return "c+b";
             }
-            throw new MissingPermissionsException("Could not open file due to missing write permissions in parent directory (" . $this->path . ")", $this);
+            $this->throwException("Could not open {type} due to missing write permissions in parent directory", MissingPermissionsException::class);
         }
         if (is_readable($this->path) && is_writable($this->path)) {
             return "c+b";
@@ -75,19 +79,21 @@ class File extends FilesystemElement implements FileInterface
         if (is_writable($this->path)) {
             return "wb";
         }
-        throw new MissingPermissionsException("Could not open file due to missing permissions (" . $this->path . ")", $this);
+        $this->throwException("Could not open {type} due to missing read and write permissions", MissingPermissionsException::class);
     }
 
     /**
-     * @throws StatException
+     * Retrieves the size of the file or directory.
+     *
+     * @return int The size of the file or directory in bytes.
+     * @throws StatException If the size cannot be determined.
      * @throws IOException
      */
     public function getSize(): int
     {
         $size = @filesize($this->path);
         if (!$size) {
-            $error = error_get_last();
-            throw new StatException("Could not get file size (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+            $this->throwException("Could not get {type} size", StatException::class);
         }
         return $size;
     }
@@ -132,7 +138,7 @@ class File extends FilesystemElement implements FileInterface
     }
 
     /**
-     * @throws CreateFileException|CreateDirectoryException
+     * @throws CreateFileException|CreateDirectoryException|IOException
      */
     public function create(): static
     {
@@ -142,14 +148,13 @@ class File extends FilesystemElement implements FileInterface
         }
 
         if (!@touch($this->path)) {
-            $error = error_get_last();
-            throw new CreateFileException("Could not create file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+            $this->throwException("Could not create {type}", CreateFileException::class);
         }
         return $this;
     }
 
     /**
-     * @throws DeleteException
+     * @throws DeleteException|IOException
      */
     public function delete(): static
     {
@@ -157,8 +162,7 @@ class File extends FilesystemElement implements FileInterface
             return $this;
         }
         if (!@unlink($this->path)) {
-            $error = error_get_last();
-            throw new DeleteException("Could not delete file (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+            $this->throwException("Could not delete {type}", DeleteException::class);
         }
         return $this;
     }
