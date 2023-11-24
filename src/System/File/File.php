@@ -92,7 +92,7 @@ class File extends FilesystemElement implements FileInterface
     public function getSize(): int
     {
         $size = @filesize($this->path);
-        if (!$size) {
+        if ($size === false) {
             $this->throwException("Could not get {type} size", StatException::class);
         }
         return $size;

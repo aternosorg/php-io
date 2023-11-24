@@ -38,6 +38,18 @@ class FileTest extends FilesystemTestCase
     }
 
     /**
+     * @throws StatException
+     * @throws IOException
+     */
+    public function testGetSizeOfEmptyFile(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        file_put_contents($path, "");
+        $element = $this->createElement($path);
+        $this->assertEquals(0, $element->getSize());
+    }
+
+    /**
      * @throws IOException
      */
     public function testThrowsExceptionOnImpossibleGetSize(): void
