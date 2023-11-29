@@ -47,7 +47,7 @@ class File extends FilesystemElement implements FileInterface
         $resource = @fopen($this->path, $this->getMode());
 
         if (!$resource) {
-            $this->throwException("Could not open {type}", IOException::class);
+            $this->throwException("Could not open {type}");
         }
 
         return $resource;
@@ -165,11 +165,6 @@ class File extends FilesystemElement implements FileInterface
             $this->throwException("Could not delete {type}", DeleteException::class);
         }
         return $this;
-    }
-
-    public function __destruct()
-    {
-        $this->close();
     }
 
 

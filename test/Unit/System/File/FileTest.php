@@ -12,6 +12,7 @@ use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TruncateException;
 use Aternos\IO\Exception\WriteException;
+use Aternos\IO\Interfaces\Types\VolatileFileInterface;
 use Aternos\IO\System\File\File;
 use Aternos\IO\Test\Unit\System\FilesystemTestCase;
 use PHPUnit\Framework\Attributes\WithoutErrorHandler;
@@ -20,9 +21,16 @@ use ReflectionObject;
 
 class FileTest extends FilesystemTestCase
 {
+    use VolatileFileTestTrait;
+
     protected function createElement(string $path): File
     {
         return new File($path);
+    }
+
+    protected function getVolatileFile(): VolatileFileInterface
+    {
+        return (new File($this->getTmpPath() . "/test"))->create();
     }
 
     /**
@@ -52,7 +60,7 @@ class FileTest extends FilesystemTestCase
     /**
      * @throws IOException
      */
-    public function testThrowsExceptionOnImpossibleGetSize(): void
+    public function testThrowsExceptionOnGetSize(): void
     {
         $path = $this->getTmpPath() . "/test";
         $element = $this->createElement($path);
@@ -210,7 +218,6 @@ class FileTest extends FilesystemTestCase
 
         $file = $reflectionObject->getProperty("socketResource")->getValue($element);
         $this->assertNull($file);
-
     }
 
     /**

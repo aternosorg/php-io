@@ -3,14 +3,11 @@
 namespace Aternos\IO\System\Socket\Traits;
 
 use Aternos\IO\Exception\IOException;
-use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Exception\WriteException;
 
 trait WriteSocketTrait
 {
     use SocketTrait;
-
-
 
     /**
      * @throws IOException
