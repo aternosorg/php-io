@@ -13,7 +13,7 @@ use Aternos\IO\System\Socket\Traits\SetSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\TruncateSocketTrait;
 use Aternos\IO\System\Socket\Traits\WriteSocketTrait;
 
-class MemoryFile implements VolatileFileInterface
+class TempMemoryFile implements VolatileFileInterface
 {
     protected string $address = "php://memory";
     protected string $mode = "c+b";
@@ -34,7 +34,7 @@ class MemoryFile implements VolatileFileInterface
 
     protected function getTypeForErrors(): string
     {
-        return "memory file";
+        return $this->getName() . " file";
     }
 
     protected function getErrorContext(): ?string

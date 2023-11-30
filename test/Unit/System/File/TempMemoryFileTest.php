@@ -4,24 +4,24 @@ namespace Aternos\IO\Test\Unit\System\File;
 
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\Types\VolatileFileInterface;
-use Aternos\IO\System\File\MemoryFile;
+use Aternos\IO\System\File\TempMemoryFile;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionObject;
 
-class MemoryFileTest extends TestCase
+class TempMemoryFileTest extends TestCase
 {
     use VolatileFileTestTrait;
 
     public function testGetName(): void
     {
-        $memoryFile = new MemoryFile();
+        $memoryFile = new TempMemoryFile();
         $this->assertEquals('memory', $memoryFile->getName());
     }
 
     protected function getVolatileFile(): VolatileFileInterface
     {
-        return new MemoryFile();
+        return new TempMemoryFile();
     }
 
     /**

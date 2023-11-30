@@ -8,7 +8,7 @@ use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Interfaces\Features\WriteInterface;
 
-class TemporaryFile extends File
+class TempDiskFile extends File
 {
     /**
      * @param string $prefix
