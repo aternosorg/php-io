@@ -5,9 +5,16 @@ namespace Aternos\IO\Test\Unit\System\File;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\WriteException;
 use Aternos\IO\System\File\TempMemoryDiskFile;
+use Aternos\IO\System\File\TempMemoryFile;
 
 class TempMemoryDiskFileTest extends TempMemoryFileTest
 {
+    public function testGetName(): void
+    {
+        $memoryFile = new TempMemoryDiskFile();
+        $this->assertEquals('memory disk', $memoryFile->getName());
+    }
+
     /**
      * @throws IOException
      * @throws WriteException
