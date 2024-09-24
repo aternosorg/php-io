@@ -7,6 +7,7 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\FilesystemInterface;
 use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;
@@ -45,14 +46,10 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertCount(4, $children);
         $this->assertContainsOnlyInstancesOf(IOElementInterface::class, $children);
 
-        $this->assertInstanceOf(DirectoryInterface::class, $children[0]);
-        $this->assertEquals($path . "/dir2", $children[0]->getPath());
-        $this->assertInstanceOf(DirectoryInterface::class, $children[1]);
-        $this->assertEquals($path . "/dir1", $children[1]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[2]);
-        $this->assertEquals($path . "/file2", $children[2]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[3]);
-        $this->assertEquals($path . "/file1", $children[3]->getPath());
+        $this->assertPathHasTypeInArray($path . "/dir2", DirectoryInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/dir1", DirectoryInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/file2", FileInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/file1", FileInterface::class, $children);
     }
 
     /**
@@ -93,16 +90,11 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertCount(5, $children);
         $this->assertContainsOnlyInstancesOf(IOElementInterface::class, $children);
 
-        $this->assertInstanceOf(DirectoryInterface::class, $children[0]);
-        $this->assertEquals($path . "/dir2", $children[0]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[1]);
-        $this->assertEquals($path . "/dir2/file3", $children[1]->getPath());
-        $this->assertInstanceOf(DirectoryInterface::class, $children[2]);
-        $this->assertEquals($path . "/dir1", $children[2]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[3]);
-        $this->assertEquals($path . "/file2", $children[3]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[4]);
-        $this->assertEquals($path . "/file1", $children[4]->getPath());
+        $this->assertPathHasTypeInArray($path . "/dir2", DirectoryInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/dir2/file3", FileInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/dir1", DirectoryInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/file2", FileInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/file1", FileInterface::class, $children);
     }
 
     /**
@@ -194,12 +186,10 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(Generator::class, $children);
         $children = iterator_to_array($children);
         $this->assertCount(5, $children);
-        $this->assertInstanceOf(Link::class, $children[0]);
-        $this->assertEquals($path . "/link3", $children[0]->getPath());
-        $this->assertInstanceOf(DirectoryLink::class, $children[1]);
-        $this->assertEquals($path . "/link2", $children[1]->getPath());
-        $this->assertInstanceOf(FileLink::class, $children[2]);
-        $this->assertEquals($path . "/link1", $children[2]->getPath());
+
+        $this->assertPathHasTypeInArray($path . "/link1", FileLink::class, $children);
+        $this->assertPathHasTypeInArray($path . "/link2", DirectoryLink::class, $children);
+        $this->assertPathHasTypeInArray($path . "/link3", Link::class, $children);
     }
 
     /**
@@ -219,12 +209,10 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(Generator::class, $children);
         $children = iterator_to_array($children);
         $this->assertCount(3, $children);
-        $this->assertInstanceOf(LinkInterface::class, $children[0]);
-        $this->assertEquals($path . "/link", $children[0]->getPath());
-        $this->assertInstanceOf(DirectoryInterface::class, $children[1]);
-        $this->assertEquals($path . "/dir", $children[1]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[2]);
-        $this->assertEquals($path . "/dir/file", $children[2]->getPath());
+
+        $this->assertPathHasTypeInArray($path . "/link", LinkInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/dir", DirectoryInterface::class, $children);
+        $this->assertPathHasTypeInArray($path . "/dir/file", FileInterface::class, $children);
     }
 
     /**
@@ -282,10 +270,12 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(Generator::class, $children);
         $children = iterator_to_array($children);
         $this->assertCount(1, $children);
-        $this->assertInstanceOf(FileLink::class, $children[0]);
-        $this->assertEquals($path . "/dir/link", $children[0]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[0]->getTarget());
-        $this->assertEquals($path . "/file", $children[0]->getTarget()->getPath());
+
+        $element = $this->getByPathFromArray($path . "/dir/link", $children);
+        $this->assertInstanceOf(FileLink::class, $element);
+        $target = $element->getTarget();
+        $this->assertInstanceOf(FileInterface::class, $target);
+        $this->assertEquals($path . "/file", $target->getPath());
     }
 
     /**
@@ -305,12 +295,13 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(Generator::class, $children);
         $children = iterator_to_array($children);
         $this->assertCount(2, $children);
-        $this->assertInstanceOf(DirectoryInterface::class, $children[0]);
-        $this->assertEquals($path . "/dir/sub-dir", $children[0]->getPath());
-        $this->assertInstanceOf(FileLink::class, $children[1]);
-        $this->assertEquals($path . "/dir/sub-dir/link", $children[1]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[1]->getTarget());
-        $this->assertEquals($path . "/file", $children[1]->getTarget()->getPath());
+
+        $this->assertPathHasTypeInArray($path . "/dir/sub-dir", DirectoryInterface::class, $children);
+        $element = $this->getByPathFromArray($path . "/dir/sub-dir/link", $children);
+        $this->assertInstanceOf(FileLink::class, $element);
+        $target = $element->getTarget();
+        $this->assertInstanceOf(FileInterface::class, $target);
+        $this->assertEquals($path . "/file", $target->getPath());
     }
 
     /**
@@ -330,8 +321,7 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(Generator::class, $children);
         $children = iterator_to_array($children);
         $this->assertCount(1, $children);
-        $this->assertInstanceOf(FileInterface::class, $children[0]);
-        $this->assertEquals($path . "/dir/file", $children[0]->getPath());
+        $this->assertPathHasTypeInArray($path . "/dir/file", FileInterface::class, $children);
     }
 
     /**
@@ -351,10 +341,9 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(Generator::class, $children);
         $children = iterator_to_array($children);
         $this->assertCount(2, $children);
-        $this->assertInstanceOf(FileLink::class, $children[0]);
-        $this->assertEquals($path . "/dir/inside-link", $children[0]->getPath());
-        $this->assertInstanceOf(FileInterface::class, $children[1]);
-        $this->assertEquals($path . "/dir/file", $children[1]->getPath());
+
+        $this->assertPathHasTypeInArray($path . "/dir/inside-link", FileLink::class, $children);
+        $this->assertPathHasTypeInArray($path . "/dir/file", FileInterface::class, $children);
     }
 
     /**

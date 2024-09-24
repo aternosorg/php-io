@@ -38,6 +38,32 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertFileExists($path);
     }
 
+    /**
+     * @param string $path
+     * @param FilesystemInterface[] $elements
+     * @return FilesystemInterface
+     */
+    protected function getByPathFromArray(string $path, array $elements): FilesystemInterface
+    {
+        foreach ($elements as $element) {
+            if ($element->getPath() === $path) {
+                return $element;
+            }
+        }
+        $this->fail("Element with path '" . $path . "' not found in array.");
+    }
+
+    /**
+     * @param string $path
+     * @param class-string<FilesystemInterface> $type
+     * @param FilesystemInterface[] $elements
+     */
+    protected function assertPathHasTypeInArray(string $path, string $type, array $elements): void
+    {
+        $element = $this->getByPathFromArray($path, $elements);
+        $this->assertInstanceOf($type, $element);
+    }
+
     public function testGetPath(): void
     {
         $path = $this->getTmpPath() . "/test";
