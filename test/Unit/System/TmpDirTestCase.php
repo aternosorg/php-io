@@ -26,6 +26,9 @@ abstract class TmpDirTestCase extends TestCase
         if ($path === null) {
             $path = $this->tmpPath;
         }
+        if ($path === null) {
+            return;
+        }
         if (!file_exists($path) && !is_link($path)) {
             return;
         }

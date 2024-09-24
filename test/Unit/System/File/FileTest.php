@@ -65,7 +65,7 @@ class FileTest extends FilesystemTestCase
         $path = $this->getTmpPath() . "/test";
         $element = $this->createElement($path);
         $this->expectException(StatException::class);
-        $this->expectExceptionMessage("Could not get file size (" . $path . ")");
+        $this->expectExceptionMessage("Could not get file size: filesize(): stat failed for " . $path . " (" . $path . ")");
         $element->getSize();
     }
 
@@ -104,7 +104,7 @@ class FileTest extends FilesystemTestCase
         $reflectionObject = new ReflectionObject($element);
         $reflectionObject->getProperty("socketResource")->setValue($element, fopen($path, "w"));
         $this->expectException(ReadException::class);
-        $this->expectExceptionMessage("Could not read from file (" . $path . ")");
+        $this->expectExceptionMessage("Could not read from file: fread(): Read of 8192 bytes failed with errno=9 Bad file descriptor (" . $path . ")");
         $element->read(4);
     }
 
@@ -115,7 +115,7 @@ class FileTest extends FilesystemTestCase
     {
         $element = $this->createElement("/dev/null/test");
         $this->expectException(IOException::class);
-        $this->expectExceptionMessage("Could not open file (/dev/null/test)");
+        $this->expectExceptionMessage("Could not open file: fopen(/dev/null/test): Failed to open stream: No such file or directory (/dev/null/test)");
         $element->read(4);
     }
 
@@ -130,7 +130,7 @@ class FileTest extends FilesystemTestCase
         chmod($path, 0222);
         $element = $this->createElement($path);
         $this->expectException(MissingPermissionsException::class);
-        $this->expectExceptionMessage("Could not read from file due to missing read permissions (" . $path . ")");
+        $this->expectExceptionMessage("Could not read from file due to missing read permissions: fread(): Read of 8192 bytes failed with errno=9 Bad file descriptor (" . $path . ")");
         $element->read(4);
     }
 
@@ -267,7 +267,7 @@ class FileTest extends FilesystemTestCase
         $reflectionObject = new ReflectionObject($element);
         $reflectionObject->getProperty("socketResource")->setValue($element, fopen($path, "r"));
         $this->expectException(WriteException::class);
-        $this->expectExceptionMessage("Could not write to file (" . $path . ")");
+        $this->expectExceptionMessage("Could not write to file: fwrite(): Write of 4 bytes failed with errno=9 Bad file descriptor (" . $path . ")");
         $element->write("test");
     }
 
@@ -282,7 +282,7 @@ class FileTest extends FilesystemTestCase
         chmod($path, 0444);
         $element = $this->createElement($path);
         $this->expectException(MissingPermissionsException::class);
-        $this->expectExceptionMessage("Could not write to file due to missing write permissions (" . $path . ")");
+        $this->expectExceptionMessage("Could not write to file due to missing write permissions: fwrite(): Write of 4 bytes failed with errno=9 Bad file descriptor (" . $path . ")");
         $element->write("test");
     }
 
@@ -305,14 +305,14 @@ class FileTest extends FilesystemTestCase
     {
         $element = $this->createElement("/dev/null");
         $this->expectException(DeleteException::class);
-        $this->expectExceptionMessage("Could not delete file (/dev/null)");
+        $this->expectExceptionMessage("Could not delete file: unlink(/dev/null): Permission denied (/dev/null)");
         $element->delete();
     }
 
     public function testThrowsExceptionOnFailedCreation(): void
     {
         $this->expectException(CreateFileException::class);
-        $this->expectExceptionMessage("Could not create file (/dev/null/test)");
+        $this->expectExceptionMessage("Could not create file: touch(): Unable to create file /dev/null/test because Not a directory (/dev/null/test)");
         $element = $this->createElement("/dev/null/test");
         $element->create();
     }
