@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface GetNameInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface GetNameInterface extends IOElementInterface
 {
     /**
      * @return string

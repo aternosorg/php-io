@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface ExistsInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface ExistsInterface extends IOElementInterface
 {
     /**
      * Check if the IO Element exists

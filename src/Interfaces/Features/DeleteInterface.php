@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface DeleteInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface DeleteInterface extends IOElementInterface
 {
     /**
      * @return $this

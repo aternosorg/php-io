@@ -18,7 +18,7 @@ use Generator;
 
 class Directory extends FilesystemElement implements DirectoryInterface
 {
-    public const MAX_DEPTH = 100;
+    public const int MAX_DEPTH = 100;
 
     /**
      * @param bool $allowOutsideLinks

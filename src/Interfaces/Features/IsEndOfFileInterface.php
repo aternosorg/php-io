@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface IsEndOfFileInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface IsEndOfFileInterface extends IOElementInterface
 {
     /**
      * Check if the current position is at the end of the file

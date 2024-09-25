@@ -10,9 +10,8 @@ use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
-use Aternos\IO\Interfaces\IOElementInterface;
 
-abstract class FilesystemElement implements FilesystemInterface, IOElementInterface
+abstract class FilesystemElement implements FilesystemInterface
 {
     /**
      * @param string $path

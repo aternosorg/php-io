@@ -6,7 +6,7 @@ use Aternos\IO\Interfaces\Features\CloseInterface;
 use Aternos\IO\Interfaces\Features\ReadInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 
-interface ReadStreamInterface extends IOElementInterface, ReadInterface, CloseInterface
+interface ReadStreamInterface extends ReadInterface, CloseInterface
 {
 
 }

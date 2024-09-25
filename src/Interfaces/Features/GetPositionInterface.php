@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface GetPositionInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface GetPositionInterface extends IOElementInterface
 {
     /**
      * @return int

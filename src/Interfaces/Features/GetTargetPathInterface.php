@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface GetTargetPathInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface GetTargetPathInterface extends IOElementInterface
 {
     /**
      * @return string

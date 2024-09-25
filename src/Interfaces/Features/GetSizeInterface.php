@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface GetSizeInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface GetSizeInterface extends IOElementInterface
 {
     /**
      * @return int

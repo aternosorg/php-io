@@ -6,7 +6,7 @@ use Aternos\IO\Interfaces\Features\CloseInterface;
 use Aternos\IO\Interfaces\Features\WriteInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 
-interface WriteStreamInterface extends IOElementInterface, WriteInterface, CloseInterface
+interface WriteStreamInterface extends WriteInterface, CloseInterface
 {
 
 }

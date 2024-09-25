@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface TargetExistsInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface TargetExistsInterface extends IOElementInterface
 {
     /**
      * @return bool

@@ -12,7 +12,6 @@ use Aternos\IO\Interfaces\Features\WriteInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 
 interface VolatileFileInterface extends
-    IOElementInterface,
     SetPositionInterface,
     IsEndOfFileInterface,
     ReadInterface,

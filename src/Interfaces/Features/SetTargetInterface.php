@@ -4,7 +4,7 @@ namespace Aternos\IO\Interfaces\Features;
 
 use Aternos\IO\Interfaces\IOElementInterface;
 
-interface SetTargetInterface
+interface SetTargetInterface extends IOElementInterface
 {
     /**
      * @param IOElementInterface $target

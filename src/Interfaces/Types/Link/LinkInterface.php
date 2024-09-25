@@ -8,7 +8,7 @@ use Aternos\IO\Interfaces\Features\SetTargetInterface;
 use Aternos\IO\Interfaces\Features\TargetExistsInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 
-interface LinkInterface extends IOElementInterface, ExistsInterface, GetTargetInterface, TargetExistsInterface, SetTargetInterface
+interface LinkInterface extends ExistsInterface, GetTargetInterface, TargetExistsInterface, SetTargetInterface
 {
 
 }

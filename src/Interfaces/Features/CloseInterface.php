@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface CloseInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface CloseInterface extends IOElementInterface
 {
     /**
      * @return $this

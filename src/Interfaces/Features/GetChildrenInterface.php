@@ -5,7 +5,7 @@ namespace Aternos\IO\Interfaces\Features;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Generator;
 
-interface GetChildrenInterface
+interface GetChildrenInterface extends IOElementInterface
 {
     /**
      * @return Generator<IOElementInterface>

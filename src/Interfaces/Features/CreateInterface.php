@@ -2,7 +2,9 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
-interface CreateInterface
+use Aternos\IO\Interfaces\IOElementInterface;
+
+interface CreateInterface extends IOElementInterface
 {
     /**
      * @return $this
