@@ -12,6 +12,7 @@ class TempMemoryDiskFile extends TempMemoryFile
      */
     public function __construct(int $memorySize = 2 * 1024 * 1024)
     {
+        /** @noinspection SpellCheckingInspection */
         $this->address = "php://temp/maxmemory:" . $memorySize;
     }
 

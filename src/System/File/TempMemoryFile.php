@@ -47,6 +47,7 @@ class TempMemoryFile implements VolatileFileInterface
      *
      * @return resource A resource of type "stream" on success
      * @throws IOException if the resource could not be opened.
+     * @noinspection PhpMixedReturnTypeCanBeReducedInspection
      */
     protected function openSocketResource(): mixed
     {

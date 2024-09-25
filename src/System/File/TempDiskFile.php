@@ -35,7 +35,7 @@ class TempDiskFile extends File
     }
 
     /**
-     * @throws DeleteException
+     * @throws DeleteException|IOException
      */
     public function __destruct()
     {

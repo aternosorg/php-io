@@ -2,10 +2,16 @@
 
 namespace Aternos\IO\System\Socket\Traits;
 
+use Aternos\IO\Exception\IOException;
+
 trait CloseSocketTrait
 {
     use SocketTrait;
 
+    /**
+     * @return $this
+     * @throws IOException
+     */
     public function close(): static
     {
         if ($this->hasSocketResource()) {
@@ -15,6 +21,9 @@ trait CloseSocketTrait
         return $this;
     }
 
+    /**
+     * @throws IOException
+     */
     public function __destruct()
     {
         $this->close();

@@ -41,6 +41,7 @@ class File extends FilesystemElement implements FileInterface
 
     /**
      * @throws IOException
+     * @noinspection PhpMixedReturnTypeCanBeReducedInspection
      */
     protected function openSocketResource(): mixed
     {

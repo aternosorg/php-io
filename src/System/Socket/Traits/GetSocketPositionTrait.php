@@ -2,10 +2,16 @@
 
 namespace Aternos\IO\System\Socket\Traits;
 
+use Aternos\IO\Exception\IOException;
+
 trait GetSocketPositionTrait
 {
     use SocketTrait;
 
+    /**
+     * @return int
+     * @throws IOException
+     */
     public function getPosition(): int
     {
         $file = $this->getSocketResource();
