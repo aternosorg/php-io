@@ -13,7 +13,7 @@ use Aternos\IO\Interfaces\Types\Link\LinkInterface;
 
 class Link extends FilesystemElement implements LinkInterface, GetTargetPathInterface
 {
-    public const DEPTH_LIMIT = 40;
+    public const int DEPTH_LIMIT = 40;
     protected ?IOElementInterface $target = null;
     protected ?bool $existsOverride = null;
 
