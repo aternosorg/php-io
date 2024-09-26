@@ -7,8 +7,8 @@ use Aternos\IO\Interfaces\IOElementInterface;
 interface SetTargetInterface extends IOElementInterface
 {
     /**
-     * @param IOElementInterface $target
+     * @param GetPathInterface $target
      * @return $this
      */
-    public function setTarget(IOElementInterface $target): static;
+    public function setTarget(GetPathInterface $target): static;
 }

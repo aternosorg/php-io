@@ -5,7 +5,7 @@ namespace Aternos\IO\System\Link;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
-use Aternos\IO\Interfaces\IOElementInterface;
+use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Generator;
 
@@ -25,12 +25,12 @@ class DirectoryLink extends Link implements DirectoryInterface
     }
 
     /**
-     * @param IOElementInterface $target
+     * @param GetPathInterface $target
      * @return $this
      * @throws SetTargetException
      * @throws DeleteException
      */
-    public function setTarget(IOElementInterface $target): static
+    public function setTarget(GetPathInterface $target): static
     {
         if (!$target instanceof DirectoryInterface) {
             throw new SetTargetException("Could not set directory link target because target is not a directory (" . $this->path . " -> " . $target->getPath() . ")", $this);

@@ -4,7 +4,7 @@ namespace Aternos\IO\System\Link;
 
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
-use Aternos\IO\Interfaces\IOElementInterface;
+use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;
 use Aternos\IO\Interfaces\Types\Link\FileLinkInterface;
 
@@ -32,7 +32,7 @@ class FileLink extends Link implements FileLinkInterface
         return $target;
     }
 
-    public function setTarget(IOElementInterface $target): static
+    public function setTarget(GetPathInterface $target): static
     {
         if (!$target instanceof FileInterface) {
             throw new SetTargetException("Could not set file link target because target is not a file (" . $this->path . " -> " . $target->getPath() . ")", $this);

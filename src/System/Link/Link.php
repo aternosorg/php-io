@@ -5,6 +5,7 @@ namespace Aternos\IO\System\Link;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
+use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\System\FilesystemElement;
 use Aternos\IO\Interfaces\Features\GetTargetPathInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
@@ -49,12 +50,12 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
-     * @param IOElementInterface $target
+     * @param GetPathInterface $target
      * @return $this
      * @throws DeleteException
      * @throws SetTargetException
      */
-    public function setTarget(IOElementInterface $target): static
+    public function setTarget(GetPathInterface $target): static
     {
         if ($this->exists()) {
             $this->delete();
