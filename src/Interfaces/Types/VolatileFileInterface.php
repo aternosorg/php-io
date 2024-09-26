@@ -9,7 +9,6 @@ use Aternos\IO\Interfaces\Features\ReadInterface;
 use Aternos\IO\Interfaces\Features\SetPositionInterface;
 use Aternos\IO\Interfaces\Features\TruncateInterface;
 use Aternos\IO\Interfaces\Features\WriteInterface;
-use Aternos\IO\Interfaces\IOElementInterface;
 
 interface VolatileFileInterface extends
     SetPositionInterface,

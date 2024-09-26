@@ -4,12 +4,12 @@ namespace Aternos\IO\System;
 
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
+use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\System\Directory\Directory;
 use Aternos\IO\System\File\File;
 use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;
-use Aternos\IO\Interfaces\Features\GetPathInterface;
 
 abstract class FilesystemElement implements FilesystemInterface
 {

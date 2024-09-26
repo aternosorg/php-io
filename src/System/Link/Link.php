@@ -6,10 +6,10 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
-use Aternos\IO\System\FilesystemElement;
 use Aternos\IO\Interfaces\Features\GetTargetPathInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\Link\LinkInterface;
+use Aternos\IO\System\FilesystemElement;
 
 class Link extends FilesystemElement implements LinkInterface, GetTargetPathInterface
 {
