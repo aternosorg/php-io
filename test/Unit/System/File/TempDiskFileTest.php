@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Test\Unit\System\File;
 
+use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SeekException;
@@ -40,13 +41,19 @@ class TempDiskFileTest extends TestCase
         $this->assertFileExists($path);
         unset($file);
         $this->assertFileExists($path);
+        unlink($path);
     }
 
+    /**
+     * @throws IOException
+     * @throws DeleteException
+     */
     public function testSerializeContainsDeleteOnDestruct(): void
     {
         $file = new TempDiskFile("test-", false);
         $serialized = $file->__serialize();
         $this->assertArrayHasKey("deleteOnDestruct", $serialized);
+        $file->delete();
     }
 
     /**

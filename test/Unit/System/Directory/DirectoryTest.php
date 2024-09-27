@@ -19,7 +19,6 @@ use Generator;
 
 class DirectoryTest extends FilesystemTestCase
 {
-
     protected function createElement(string $path): Directory
     {
         return new Directory($path);

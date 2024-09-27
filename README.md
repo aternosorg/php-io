@@ -42,6 +42,7 @@ $directory->delete();
 | **TempMemoryFile**     | [`Aternos\IO\System\File\TempMemoryFile`](src/System/File/TempMemoryFile.php)                         | Temporary file in memory                                              |
 | **TempMemoryDiskFile** | [`Aternos\IO\System\File\TempMemoryDiskFile`](src/System/File/TempMemoryDiskFile.php)                 | Temporary file in memory, moved to disk when size exceeds a threshold |
 | **Directory**          | [`Aternos\IO\System\Directory\Directory`](src/System/Directory/Directory.php)                         | Regular filesystem directory                                          |
+| **TempDirectory**      | [`Aternos\IO\System\Directory\TempDirectory`](src/System/Directory/TempDirectory.php)                 | Temporary directory, created and deleted automatically                |
 | **Link**               | [`Aternos\IO\System\Link\Link`](src/System/Link/Link.php)                                             | Generic filesystem link                                               |
 | **FileLink**           | [`Aternos\IO\System\Link\FileLink`](src/System/Link/FileLink.php)                                     | Filesystem link to a file, can be used like a file                    |
 | **DirectoryLink**      | [`Aternos\IO\System\Link\DirectoryLink`](src/System/Link/DirectoryLink.php)                           | Filesystem link to a directory, can be used like a directory          |
