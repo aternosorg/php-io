@@ -20,5 +20,4 @@ trait WriteSocketTrait
         }
         return $this;
     }
-
 }

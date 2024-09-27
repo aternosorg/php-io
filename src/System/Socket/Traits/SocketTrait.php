@@ -21,15 +21,8 @@ trait SocketTrait
 
     /**
      * @return resource
-     * @throws IOException
      */
-    protected function getSocketResource(): mixed
-    {
-        if (!$this->hasSocketResource()) {
-            $this->socketResource = $this->openSocketResource();
-        }
-        return $this->socketResource;
-    }
+    abstract protected function getSocketResource(): mixed;
 
     /**
      * @return void
@@ -69,9 +62,4 @@ trait SocketTrait
      * @return string|null
      */
     abstract protected function getErrorContext(): ?string;
-
-    /**
-     * @return resource
-     */
-    abstract protected function openSocketResource(): mixed;
 }
