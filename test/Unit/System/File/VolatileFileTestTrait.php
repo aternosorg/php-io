@@ -2,6 +2,9 @@
 
 namespace Aternos\IO\Test\Unit\System\File;
 
+use Aternos\IO\Exception\CreateDirectoryException;
+use Aternos\IO\Exception\CreateFileException;
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
@@ -15,6 +18,11 @@ trait VolatileFileTestTrait
 {
     abstract protected function getVolatileFile(): VolatileFileInterface;
 
+    /**
+     * @throws IOException
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     */
     public function testReadWrite(): void
     {
         $file = $this->getVolatileFile();
@@ -23,6 +31,11 @@ trait VolatileFileTestTrait
         $this->assertEquals('test', $file->read(4));
     }
 
+    /**
+     * @throws IOException
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     */
     public function testWriteEmpty(): void
     {
         $file = $this->getVolatileFile();
@@ -31,6 +44,9 @@ trait VolatileFileTestTrait
     }
 
     /**
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     * @throws IOException
      * @throws ReflectionException
      */
     public function testThrowsExceptionOnWrite(): void
@@ -43,6 +59,11 @@ trait VolatileFileTestTrait
         $file->write('test');
     }
 
+    /**
+     * @throws IOException
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     */
     public function testReadEmpty(): void
     {
         $file = $this->getVolatileFile();
@@ -53,6 +74,9 @@ trait VolatileFileTestTrait
     }
 
     /**
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     * @throws IOException
      * @throws ReflectionException
      */
     public function testThrowsExceptionOnRead(): void
@@ -65,6 +89,11 @@ trait VolatileFileTestTrait
         $file->read(4);
     }
 
+    /**
+     * @throws IOException
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     */
     public function testGetSetPosition(): void
     {
         $file = $this->getVolatileFile();
@@ -75,6 +104,11 @@ trait VolatileFileTestTrait
         $this->assertEquals(2, $file->getPosition());
     }
 
+    /**
+     * @throws CreateDirectoryException
+     * @throws IOException
+     * @throws CreateFileException
+     */
     public function testSetPositionThrowsException(): void
     {
         $file = $this->getVolatileFile();
@@ -82,6 +116,11 @@ trait VolatileFileTestTrait
         $file->setPosition(-1);
     }
 
+    /**
+     * @throws CreateDirectoryException
+     * @throws IOException
+     * @throws CreateFileException
+     */
     public function testCheckEndOfFile(): void
     {
         $file = $this->getVolatileFile();
@@ -92,6 +131,9 @@ trait VolatileFileTestTrait
     }
 
     /**
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     * @throws IOException
      * @throws ReflectionException
      */
     public function testClose(): void
@@ -105,6 +147,11 @@ trait VolatileFileTestTrait
         $this->assertNull($reflectionProperty->getValue($file));
     }
 
+    /**
+     * @throws IOException
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     */
     public function testGetSize(): void
     {
         $file = $this->getVolatileFile();
@@ -114,6 +161,9 @@ trait VolatileFileTestTrait
     }
 
     /**
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     * @throws IOException
      * @throws ReflectionException
      */
     public function testThrowsExceptionOnGetSize(): void
@@ -126,6 +176,11 @@ trait VolatileFileTestTrait
         $file->getSize();
     }
 
+    /**
+     * @throws CreateDirectoryException
+     * @throws IOException
+     * @throws CreateFileException
+     */
     public function testTruncate(): void
     {
         $file = $this->getVolatileFile();
@@ -136,6 +191,12 @@ trait VolatileFileTestTrait
         $this->assertEquals('te', $file->read(2));
     }
 
+    /**
+     * @throws IOException
+     * @throws CreateFileException
+     * @throws ReflectionException
+     * @throws CreateDirectoryException
+     */
     public function testThrowsExceptionOnTruncate(): void
     {
         $file = $this->getVolatileFile();

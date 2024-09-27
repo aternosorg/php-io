@@ -65,6 +65,7 @@ class TempDiskFileTest extends TestCase
         $this->assertEquals("test", file_get_contents($target->getPath()));
         $file->copyTo($target);
         $file->copyTo($target);
+        /** @noinspection SpellCheckingInspection */
         $this->assertEquals("testtesttest", file_get_contents($target->getPath()));
     }
 }

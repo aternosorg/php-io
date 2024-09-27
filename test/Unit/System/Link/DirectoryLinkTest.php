@@ -4,7 +4,6 @@ namespace Aternos\IO\Test\Unit\System\Link;
 
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
-use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\System\Directory\Directory;
 use Aternos\IO\System\File\File;

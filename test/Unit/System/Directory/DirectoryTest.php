@@ -7,7 +7,6 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\System\Directory\Directory;
-use Aternos\IO\System\FilesystemInterface;
 use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;

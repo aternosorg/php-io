@@ -235,6 +235,11 @@ class FileLinkTest extends LinkTest
         $this->assertEquals("3", $element->read(1));
     }
 
+    /**
+     * @throws GetTargetException
+     * @throws SetTargetException
+     * @throws DeleteException
+     */
     public function testGetSize(): void
     {
         $targetPath = $this->getTmpPath() . "/test-target";

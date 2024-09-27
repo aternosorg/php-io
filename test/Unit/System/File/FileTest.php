@@ -28,6 +28,11 @@ class FileTest extends FilesystemTestCase
         return new File($path);
     }
 
+    /**
+     * @throws IOException
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     */
     protected function getVolatileFile(): VolatileFileInterface
     {
         return (new File($this->getTmpPath() . "/test"))->create();
@@ -301,6 +306,9 @@ class FileTest extends FilesystemTestCase
         $element->write("test");
     }
 
+    /**
+     * @throws IOException
+     */
     public function testThrowsExceptionOnImpossibleDelete(): void
     {
         $element = $this->createElement("/dev/null");
@@ -309,6 +317,10 @@ class FileTest extends FilesystemTestCase
         $element->delete();
     }
 
+    /**
+     * @throws IOException
+     * @throws CreateDirectoryException
+     */
     public function testThrowsExceptionOnFailedCreation(): void
     {
         $this->expectException(CreateFileException::class);
