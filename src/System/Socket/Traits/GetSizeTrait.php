@@ -5,12 +5,19 @@ namespace Aternos\IO\System\Socket\Traits;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\StatException;
 
+/**
+ * Trait GetSizeTrait
+ *
+ * Trait for socket based elements implementing {@link GetSizeInterface}
+ *
+ * @package Aternos\IO\System\Socket\Traits
+ */
 trait GetSizeTrait
 {
     use SocketTrait;
 
     /**
-     * @return int
+     * @inheritDoc
      * @throws IOException
      */
     public function getSize(): int

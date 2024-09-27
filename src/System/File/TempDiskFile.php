@@ -8,10 +8,17 @@ use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Interfaces\Features\WriteInterface;
 
+/**
+ * Class TempDiskFile
+ *
+ * Temporary file on disk, created automatically in the temp directory, deleted on destruct by default
+ *
+ * @package Aternos\IO\System\File
+ */
 class TempDiskFile extends File
 {
     /**
-     * @param string $prefix
+     * @param string $prefix Prefix for the temporary file name
      * @param bool $deleteOnDestruct
      */
     public function __construct(string $prefix = "io-", protected bool $deleteOnDestruct = true)
@@ -21,6 +28,10 @@ class TempDiskFile extends File
     }
 
     /**
+     * Copy the file to another writeable element
+     *
+     * @param WriteInterface $target
+     * @return $this
      * @throws IOException
      * @throws ReadException
      * @throws SeekException

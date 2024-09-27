@@ -7,6 +7,13 @@ use Aternos\IO\System\Socket\Traits\CloseSocketTrait;
 use Aternos\IO\System\Socket\Traits\GetSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\GetSocketTrait;
 
+/**
+ * Class SocketStreamElement
+ *
+ * Base class for socket stream elements
+ *
+ * @package Aternos\IO\System\Socket\Stream
+ */
 abstract class SocketStreamElement implements GetNameInterface
 {
     use GetSocketTrait,
@@ -22,7 +29,7 @@ abstract class SocketStreamElement implements GetNameInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     protected function getTypeForErrors(): string
     {
@@ -30,7 +37,7 @@ abstract class SocketStreamElement implements GetNameInterface
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     protected function getErrorContext(): ?string
     {

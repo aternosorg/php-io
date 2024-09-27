@@ -11,9 +11,18 @@ use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;
 
+/**
+ * Class FilesystemElement
+ *
+ * Base class for filesystem elements
+ *
+ * @package Aternos\IO\System
+ */
 abstract class FilesystemElement implements FilesystemInterface
 {
     /**
+     * Get the matching filesystem element for a path
+     *
      * @param string $path
      * @return FilesystemElement
      */
@@ -42,8 +51,7 @@ abstract class FilesystemElement implements FilesystemInterface
     }
 
     /**
-     * @param string $name
-     * @return $this
+     * @inheritDoc
      * @throws MoveException
      */
     public function changeName(string $name): static
@@ -52,17 +60,24 @@ abstract class FilesystemElement implements FilesystemInterface
         return $this;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getName(): string
     {
         return basename($this->path);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getPath(): string
     {
         return $this->path;
     }
 
     /**
+     * @inheritDoc
      * @throws PathOutsideElementException
      */
     public function getRelativePathTo(GetPathInterface $element, bool $allowOutsideElement = false): string
@@ -97,6 +112,7 @@ abstract class FilesystemElement implements FilesystemInterface
     }
 
     /**
+     * @inheritDoc
      * @throws MoveException
      */
     public function move(string $path): static
@@ -110,6 +126,7 @@ abstract class FilesystemElement implements FilesystemInterface
     }
 
     /**
+     * @inheritDoc
      * @return bool
      */
     public function exists(): bool

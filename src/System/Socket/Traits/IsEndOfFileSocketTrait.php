@@ -4,12 +4,19 @@ namespace Aternos\IO\System\Socket\Traits;
 
 use Aternos\IO\Exception\IOException;
 
+/**
+ * Trait IsEndOfFileSocketTrait
+ *
+ * Trait for socket based elements implementing {@link IsEndOfFileInterface}
+ *
+ * @package Aternos\IO\System\Socket\Traits
+ */
 trait IsEndOfFileSocketTrait
 {
     use SocketTrait;
 
     /**
-     * @return bool
+     * @inheritDoc
      * @throws IOException
      */
     public function isEndOfFile(): bool

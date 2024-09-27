@@ -4,12 +4,19 @@ namespace Aternos\IO\System\Socket\Traits;
 
 use Aternos\IO\Exception\IOException;
 
+/**
+ * Trait CloseSocketTrait
+ *
+ * Trait for socket based elements implementing {@link CloseInterface}
+ *
+ * @package Aternos\IO\System\Socket\Traits
+ */
 trait CloseSocketTrait
 {
     use SocketTrait;
 
     /**
-     * @return $this
+     * @inheritDoc
      * @throws IOException
      */
     public function close(): static

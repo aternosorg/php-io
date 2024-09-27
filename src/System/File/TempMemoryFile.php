@@ -14,6 +14,13 @@ use Aternos\IO\System\Socket\Traits\SetSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\TruncateSocketTrait;
 use Aternos\IO\System\Socket\Traits\WriteSocketTrait;
 
+/**
+ * Class TempMemoryFile
+ *
+ * Temporary file in memory
+ *
+ * @package Aternos\IO\System\File
+ */
 class TempMemoryFile implements VolatileFileInterface
 {
     protected string $address = "php://memory";
@@ -29,26 +36,33 @@ class TempMemoryFile implements VolatileFileInterface
         WriteSocketTrait,
         GetSizeTrait;
 
+    /**
+     * @inheritDoc
+     */
     public function getName(): ?string
     {
         return "memory";
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function getTypeForErrors(): string
     {
         return $this->getName() . " file";
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function getErrorContext(): ?string
     {
         return null;
     }
 
     /**
-     * Opens a socket resource using the "php://memory" stream wrapper.
-     *
-     * @return resource A resource of type "stream" on success
-     * @throws IOException if the resource could not be opened.
+     * @inheritDoc
+     * @throws IOException
      * @noinspection PhpMixedReturnTypeCanBeReducedInspection
      */
     protected function openSocketResource(): mixed

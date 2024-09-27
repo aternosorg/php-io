@@ -5,13 +5,20 @@ namespace Aternos\IO\System\Socket\Traits;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\SeekException;
 
+/**
+ * Trait SetSocketPositionTrait
+ *
+ * Trait for socket based elements implementing {@link SetPositionInterface}
+ *
+ * @package Aternos\IO\System\Socket\Traits
+ */
 trait SetSocketPositionTrait
 {
     use SocketTrait;
 
     /**
-     * @throws IOException
-     * @throws SeekException
+     * @inheritDoc
+     * @throws SeekException|IOException
      */
     public function setPosition(int $position): static
     {

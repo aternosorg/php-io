@@ -25,7 +25,9 @@ use Aternos\IO\System\Socket\Traits\WriteSocketTrait;
 /**
  * Class File
  *
- * Represents a file object.
+ * Filesystem file
+ *
+ * @package Aternos\IO\System\File
  */
 class File extends FilesystemElement implements FileInterface
 {
@@ -42,6 +44,7 @@ class File extends FilesystemElement implements FileInterface
     }
 
     /**
+     * @inheritDoc
      * @throws IOException
      * @noinspection PhpMixedReturnTypeCanBeReducedInspection
      */
@@ -57,6 +60,8 @@ class File extends FilesystemElement implements FileInterface
     }
 
     /**
+     * Get the best mode for the file based on the permissions
+     *
      * @return string
      * @throws MissingPermissionsException|CreateDirectoryException|IOException
      */
@@ -86,10 +91,8 @@ class File extends FilesystemElement implements FileInterface
     }
 
     /**
-     * Retrieves the size of the file or directory.
-     *
-     * @return int The size of the file or directory in bytes.
-     * @throws StatException If the size cannot be determined.
+     * @inheritDoc
+     * @throws StatException
      * @throws IOException
      */
     public function getSize(): int
@@ -101,12 +104,16 @@ class File extends FilesystemElement implements FileInterface
         return $size;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getName(): string
     {
         return basename($this->path);
     }
 
     /**
+     * @inheritDoc
      * @throws IOException
      * @throws ReadException
      */
@@ -122,8 +129,8 @@ class File extends FilesystemElement implements FileInterface
         }
     }
 
-
     /**
+     * @inheritDoc
      * @throws IOException
      * @throws WriteException
      */
@@ -141,6 +148,7 @@ class File extends FilesystemElement implements FileInterface
     }
 
     /**
+     * @inheritDoc
      * @throws CreateFileException|CreateDirectoryException|IOException
      */
     public function create(): static
@@ -157,6 +165,7 @@ class File extends FilesystemElement implements FileInterface
     }
 
     /**
+     * @inheritDoc
      * @throws DeleteException|IOException
      */
     public function delete(): static
@@ -170,9 +179,8 @@ class File extends FilesystemElement implements FileInterface
         return $this;
     }
 
-
     /**
-     * @return string
+     * @inheritDoc
      */
     protected function getTypeForErrors(): string
     {
@@ -180,7 +188,7 @@ class File extends FilesystemElement implements FileInterface
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     protected function getErrorContext(): ?string
     {

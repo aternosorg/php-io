@@ -5,11 +5,19 @@ namespace Aternos\IO\System\Socket\Traits;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\TruncateException;
 
+/**
+ * Trait TruncateSocketTrait
+ *
+ * Trait for socket based elements implementing {@link TruncateInterface}
+ *
+ * @package Aternos\IO\System\Socket\Traits
+ */
 trait TruncateSocketTrait
 {
     use SocketTrait;
 
     /**
+     * @inheritDoc
      * @throws IOException
      * @throws TruncateException
      */

@@ -4,6 +4,13 @@ namespace Aternos\IO\System\Socket\Traits;
 
 use Aternos\IO\Exception\IOException;
 
+/**
+ * Trait SocketTrait
+ *
+ * Base trait for all other socket traits
+ *
+ * @package Aternos\IO\System\Socket\Traits
+ */
 trait SocketTrait
 {
     /**
@@ -12,6 +19,8 @@ trait SocketTrait
     protected mixed $socketResource = null;
 
     /**
+     * Check if a socket resource is available
+     *
      * @return bool
      */
     protected function hasSocketResource(): bool
@@ -20,11 +29,15 @@ trait SocketTrait
     }
 
     /**
+     * Get the socket resource
+     *
      * @return resource
      */
     abstract protected function getSocketResource(): mixed;
 
     /**
+     * Unset the socket resource
+     *
      * @return void
      */
     protected function clearSocketResource(): void
@@ -33,6 +46,10 @@ trait SocketTrait
     }
 
     /**
+     * Throw an exception with the given message
+     *
+     * Includes type name and error context
+     *
      * @template T of IOException
      * @param string $message
      * @param class-string<T> $type
@@ -54,11 +71,15 @@ trait SocketTrait
     }
 
     /**
+     * Get the type name for error messages
+     *
      * @return string
      */
     abstract protected function getTypeForErrors(): string;
 
     /**
+     * Get the error context for error messages, e.g. the path
+     *
      * @return string|null
      */
     abstract protected function getErrorContext(): ?string;

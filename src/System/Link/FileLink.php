@@ -2,15 +2,24 @@
 
 namespace Aternos\IO\System\Link;
 
+use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;
 use Aternos\IO\Interfaces\Types\Link\FileLinkInterface;
 
+/**
+ * Class FileLink
+ *
+ * Filesystem link to a file
+ *
+ * @package Aternos\IO\System\Link
+ */
 class FileLink extends Link implements FileLinkInterface
 {
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function close(): static
@@ -20,7 +29,7 @@ class FileLink extends Link implements FileLinkInterface
     }
 
     /**
-     * @return FileInterface
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getTarget(): FileInterface
@@ -32,6 +41,11 @@ class FileLink extends Link implements FileLinkInterface
         return $target;
     }
 
+    /**
+     * @inheritDoc
+     * @throws SetTargetException
+     * @throws DeleteException
+     */
     public function setTarget(GetPathInterface $target): static
     {
         if (!$target instanceof FileInterface) {
@@ -41,6 +55,7 @@ class FileLink extends Link implements FileLinkInterface
     }
 
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function create(): static
@@ -59,6 +74,7 @@ class FileLink extends Link implements FileLinkInterface
     }
 
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getSize(): int
@@ -76,6 +92,7 @@ class FileLink extends Link implements FileLinkInterface
     }
 
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function setPosition(int $position): static
@@ -105,6 +122,7 @@ class FileLink extends Link implements FileLinkInterface
     }
 
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function isEndOfFile(): bool

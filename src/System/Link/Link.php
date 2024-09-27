@@ -11,6 +11,13 @@ use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\Link\LinkInterface;
 use Aternos\IO\System\FilesystemElement;
 
+/**
+ * Class Link
+ *
+ * General filesystem link
+ *
+ * @package Aternos\IO\System\Link
+ */
 class Link extends FilesystemElement implements LinkInterface, GetTargetPathInterface
 {
     public const int DEPTH_LIMIT = 40;
@@ -18,6 +25,7 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     protected ?bool $existsOverride = null;
 
     /**
+     * @inheritDoc
      * @throws DeleteException
      */
     public function delete(): static
@@ -32,6 +40,7 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getTarget(): IOElementInterface
@@ -50,8 +59,7 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
-     * @param GetPathInterface $target
-     * @return $this
+     * @inheritDoc
      * @throws DeleteException
      * @throws SetTargetException
      */
@@ -68,7 +76,7 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function exists(): bool
     {
@@ -79,6 +87,7 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getTargetPath(): string
@@ -91,6 +100,7 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function targetExists(): bool
@@ -101,7 +111,7 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
-     * @return IOElementInterface
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getFinalTarget(): IOElementInterface
@@ -110,6 +120,9 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
+     * Get the last link in the chain, detecting loops and too many levels of links
+     *
+     * @return LinkInterface
      * @throws GetTargetException
      */
     protected function getFinalLink(): LinkInterface
@@ -136,7 +149,7 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
     }
 
     /**
-     * @return string
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getFinalTargetPath(): string
@@ -144,6 +157,9 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
         return $this->getFinalLink()->getTargetPath();
     }
 
+    /**
+     * @return array|string[]
+     */
     public function __serialize(): array
     {
         return [

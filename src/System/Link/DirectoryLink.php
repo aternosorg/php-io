@@ -7,12 +7,20 @@ use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
+use Aternos\IO\Interfaces\Types\Link\DirectoryLinkInterface;
 use Generator;
 
-class DirectoryLink extends Link implements DirectoryInterface
+/**
+ * Class DirectoryLink
+ *
+ * Filesystem link to a directory
+ *
+ * @package Aternos\IO\System\Link
+ */
+class DirectoryLink extends Link implements DirectoryLinkInterface
 {
     /**
-     * @return DirectoryInterface
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getTarget(): DirectoryInterface
@@ -25,8 +33,7 @@ class DirectoryLink extends Link implements DirectoryInterface
     }
 
     /**
-     * @param GetPathInterface $target
-     * @return $this
+     * @inheritDoc
      * @throws SetTargetException
      * @throws DeleteException
      */
@@ -39,6 +46,7 @@ class DirectoryLink extends Link implements DirectoryInterface
     }
 
     /**
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function create(): static
@@ -48,8 +56,7 @@ class DirectoryLink extends Link implements DirectoryInterface
     }
 
     /**
-     * @param bool $allowOutsideLinks
-     * @return Generator
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getChildren(bool $allowOutsideLinks = false): Generator
@@ -58,10 +65,7 @@ class DirectoryLink extends Link implements DirectoryInterface
     }
 
     /**
-     * @param bool $allowOutsideLinks
-     * @param bool $followLinks
-     * @param int $currentDepth
-     * @return Generator
+     * @inheritDoc
      * @throws GetTargetException
      */
     public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true, int $currentDepth = 0): Generator

@@ -4,12 +4,19 @@ namespace Aternos\IO\System\Socket\Traits;
 
 use Aternos\IO\Exception\IOException;
 
+/**
+ * Trait GetSocketPositionTrait
+ *
+ * Trait for socket based elements implementing {@link GetPositionInterface}
+ *
+ * @package Aternos\IO\System\Socket\Traits
+ */
 trait GetSocketPositionTrait
 {
     use SocketTrait;
 
     /**
-     * @return int
+     * @inheritDoc
      * @throws IOException
      */
     public function getPosition(): int

@@ -11,18 +11,23 @@ use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\Features\GetTargetInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\System\FilesystemElement;
-use Aternos\IO\System\FilesystemInterface;
 use Aternos\IO\System\Link\Link;
 use DirectoryIterator;
 use Generator;
 
+/**
+ * Class Directory
+ *
+ * Filesystem directory
+ *
+ * @package Aternos\IO\System\Directory
+ */
 class Directory extends FilesystemElement implements DirectoryInterface
 {
     public const int MAX_DEPTH = 100;
 
     /**
-     * @param bool $allowOutsideLinks
-     * @return Generator<FilesystemInterface>
+     * @inheritDoc
      * @throws MissingPermissionsException
      * @throws GetTargetException
      */
@@ -50,10 +55,7 @@ class Directory extends FilesystemElement implements DirectoryInterface
     }
 
     /**
-     * @param bool $allowOutsideLinks
-     * @param bool $followLinks
-     * @param int $currentDepth
-     * @return Generator
+     * @inheritDoc
      * @throws GetTargetException
      * @throws MissingPermissionsException
      */
@@ -80,6 +82,8 @@ class Directory extends FilesystemElement implements DirectoryInterface
     }
 
     /**
+     * Check if an element is in this directory
+     *
      * @param GetPathInterface $element
      * @return bool
      * @throws GetTargetException
@@ -93,6 +97,10 @@ class Directory extends FilesystemElement implements DirectoryInterface
     }
 
     /**
+     * Check if a link and all links up to the final target are in this directory
+     *
+     * @param Link $link
+     * @return bool
      * @throws GetTargetException
      */
     protected function isLinkInDirectory(Link $link): bool
@@ -123,6 +131,8 @@ class Directory extends FilesystemElement implements DirectoryInterface
     }
 
     /**
+     * Check if a path is in this directory
+     *
      * @param string $path
      * @return bool
      */
@@ -135,6 +145,7 @@ class Directory extends FilesystemElement implements DirectoryInterface
     }
 
     /**
+     * @inheritDoc
      * @throws CreateDirectoryException
      */
     public function create(): static
@@ -147,6 +158,7 @@ class Directory extends FilesystemElement implements DirectoryInterface
     }
 
     /**
+     * @inheritDoc
      * @throws DeleteException
      * @throws MissingPermissionsException
      * @throws GetTargetException

@@ -4,12 +4,19 @@ namespace Aternos\IO\System\Socket\Traits;
 
 use Aternos\IO\Exception\IOException;
 
+/**
+ * Trait OpenSocketTrait
+ *
+ * Trait for socket based elements using {@link SocketTrait} that open the socket as needed
+ *
+ * @package Aternos\IO\System\Socket\Traits
+ */
 trait OpenSocketTrait
 {
     use SocketTrait;
 
     /**
-     * @return resource
+     * @inheritDoc
      * @throws IOException
      */
     protected function getSocketResource(): mixed
@@ -21,6 +28,10 @@ trait OpenSocketTrait
     }
 
     /**
+     * Open the socket resource
+     *
+     * Will only be called if needed
+     *
      * @return resource
      */
     abstract protected function openSocketResource(): mixed;
