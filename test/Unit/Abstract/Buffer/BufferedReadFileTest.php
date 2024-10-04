@@ -84,4 +84,31 @@ class BufferedReadFileTest extends FileTest
         $element->setPosition(5);
         $this->assertEquals("5", $element->read(1));
     }
+
+    /**
+     * @throws IOException
+     */
+    public function testAutomaticReadBuffer(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        file_put_contents($path, "0123456789");
+        $element = $this->createElement($path);
+        $element->setAutomaticReadBufferLength(5);
+        $this->assertEquals("01234", $element->read(5));
+        $this->assertEquals("56789", $element->read(5));
+    }
+
+    /**
+     * @throws IOException
+     */
+    public function testReadFromAutomaticBufferAfterDeletion(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        file_put_contents($path, "0123456789");
+        $element = $this->createElement($path);
+        $element->setAutomaticReadBufferLength(10);
+        $this->assertEquals("01234", $element->read(5));
+        unlink($path);
+        $this->assertEquals("56789", $element->read(5));
+    }
 }

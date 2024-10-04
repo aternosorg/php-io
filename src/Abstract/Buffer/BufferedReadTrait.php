@@ -14,6 +14,7 @@ use Aternos\IO\Exception\IOException;
 trait BufferedReadTrait
 {
     protected ?Buffer $readBuffer = null;
+    protected ?int $automaticReadBufferLength = null;
 
     /**
      * @inheritDoc
@@ -26,10 +27,18 @@ trait BufferedReadTrait
             $data = $this->readBuffer->read($length);
         }
 
-        if (strlen($data) < $length) {
-            $this->readBuffer = null;
-            $data .= parent::read($length - strlen($data));
+        if (strlen($data) >= $length) {
+            return $data;
         }
+
+        if ($this->automaticReadBufferLength) {
+            $this->readIntoBuffer($this->automaticReadBufferLength);
+            return $this->read($length);
+        }
+
+        $this->readBuffer = null;
+        /** @noinspection PhpMultipleClassDeclarationsInspection */
+        $data .= parent::read($length - strlen($data));
 
         return $data;
     }
@@ -40,7 +49,20 @@ trait BufferedReadTrait
      */
     public function readIntoBuffer(int $length): static
     {
-        $this->readBuffer = new Buffer($this->getPosition(), $this->read($length));
+        /** @noinspection PhpMultipleClassDeclarationsInspection */
+        $this->readBuffer = new Buffer($this->getPosition(), parent::read($length));
+        return $this;
+    }
+
+    /**
+     * The length of data to read automatically into the buffer when the buffer is empty
+     *
+     * @param int|null $length
+     * @return $this
+     */
+    public function setAutomaticReadBufferLength(?int $length): static
+    {
+        $this->automaticReadBufferLength = $length;
         return $this;
     }
 
@@ -49,6 +71,7 @@ trait BufferedReadTrait
      */
     public function getPosition(): int
     {
+        /** @noinspection PhpMultipleClassDeclarationsInspection */
         return $this->readBuffer?->getPosition() ?? parent::getPosition();
     }
 }
