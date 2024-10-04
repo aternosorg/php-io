@@ -132,7 +132,7 @@ class BufferedReadFileTest extends FileTest
      * @throws IOException
      * @throws ReadException
      */
-    public function testThrowsExceptionAfterChangeAndClearReadBuffer(): void
+    public function testReadsNothingAfterChangingAndClearingBuffer(): void
     {
         $path = $this->getTmpPath() . "/test";
         file_put_contents($path, "0123456789");
