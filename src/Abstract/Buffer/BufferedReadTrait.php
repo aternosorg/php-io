@@ -55,10 +55,16 @@ trait BufferedReadTrait
     }
 
     /**
-     * The length of data to read automatically into the buffer when the buffer is empty
-     *
-     * @param int|null $length
-     * @return $this
+     * @inheritDoc
+     */
+    public function clearReadBuffer(): static
+    {
+        $this->readBuffer = null;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function setAutomaticReadBufferLength(?int $length): static
     {

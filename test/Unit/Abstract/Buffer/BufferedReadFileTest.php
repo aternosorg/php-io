@@ -111,4 +111,36 @@ class BufferedReadFileTest extends FileTest
         unlink($path);
         $this->assertEquals("56789", $element->read(5));
     }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws ReadException
+     */
+    public function testClearReadBuffer(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        file_put_contents($path, "test");
+        $element = $this->createElement($path);
+        $element->readIntoBuffer(4);
+        $element->clearReadBuffer();
+        $this->assertEquals("test", $element->read(4));
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws ReadException
+     */
+    public function testThrowsExceptionAfterChangeAndClearReadBuffer(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        file_put_contents($path, "0123456789");
+        $element = $this->createElement($path);
+        $element->readIntoBuffer(10);
+        $this->assertEquals("01234", $element->read(5));
+        file_put_contents($path, "");
+        $element->clearReadBuffer();
+        $this->assertEquals("", $element->read(5));
+    }
 }

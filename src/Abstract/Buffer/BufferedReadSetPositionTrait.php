@@ -2,6 +2,8 @@
 
 namespace Aternos\IO\Abstract\Buffer;
 
+use Aternos\IO\Exception\IOException;
+
 /**
  * Trait BufferedReadSetPositionTrait
  *
@@ -11,8 +13,13 @@ namespace Aternos\IO\Abstract\Buffer;
  */
 trait BufferedReadSetPositionTrait
 {
-    use BufferedReadTrait;
+    use BufferedReadTrait {
+        clearReadBuffer as clearReadBufferTrait;
+    }
 
+    /**
+     * @inheritDoc
+     */
     public function setPosition(int $position): static
     {
         if ($this->readBuffer) {
@@ -21,5 +28,17 @@ trait BufferedReadSetPositionTrait
             parent::setPosition($position);
         }
         return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws IOException
+     */
+    public function clearReadBuffer(): static
+    {
+        if ($this->readBuffer) {
+            parent::setPosition($this->readBuffer->getPosition());
+        }
+        return $this->clearReadBufferTrait();
     }
 }
