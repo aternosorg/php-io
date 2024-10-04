@@ -41,6 +41,7 @@ $directory->delete();
 | **TempDiskFile**       | [`Aternos\IO\System\File\TempDiskFile`](src/System/File/TempDiskFile.php)                             | Temporary disk file, created and deleted automatically                |
 | **TempMemoryFile**     | [`Aternos\IO\System\File\TempMemoryFile`](src/System/File/TempMemoryFile.php)                         | Temporary file in memory                                              |
 | **TempMemoryDiskFile** | [`Aternos\IO\System\File\TempMemoryDiskFile`](src/System/File/TempMemoryDiskFile.php)                 | Temporary file in memory, moved to disk when size exceeds a threshold |
+| **BufferedReadFile**   | [`Aternos\IO\Abstract\Buffer\BufferedReadFile`](src/Abstract/Buffer/BufferedReadFile.php)             | File that can buffer read operations                                  |
 | **Directory**          | [`Aternos\IO\System\Directory\Directory`](src/System/Directory/Directory.php)                         | Regular filesystem directory                                          |
 | **TempDirectory**      | [`Aternos\IO\System\Directory\TempDirectory`](src/System/Directory/TempDirectory.php)                 | Temporary directory, created and deleted automatically                |
 | **FilteredDirectory**  | [`Aternos\IO\System\Directory\FilteredDirectory`](src/System/Directory/FilteredDirectory.php)         | Directory that filters its children                                   |
