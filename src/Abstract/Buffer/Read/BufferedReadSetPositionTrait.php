@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Abstract\Buffer;
+namespace Aternos\IO\Abstract\Buffer\Read;
 
 use Aternos\IO\Exception\IOException;
 
@@ -14,7 +14,7 @@ use Aternos\IO\Exception\IOException;
 trait BufferedReadSetPositionTrait
 {
     use BufferedReadTrait {
-        clearReadBuffer as clearReadBufferTrait;
+        clearReadBuffer as protected clearReadBufferTrait;
     }
 
     /**

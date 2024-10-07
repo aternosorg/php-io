@@ -114,11 +114,22 @@ class Buffer
      * Check if a position is in the buffer
      *
      * @param int $position
+     * @param bool $includeEnd
      * @return bool
      */
-    public function isInBuffer(int $position): bool
+    public function isInBuffer(int $position, bool $includeEnd = false): bool
     {
-        return $position >= $this->getAbsoluteStartPosition() && $position < $this->getAbsoluteStartPosition() + strlen($this->getBuffer());
+        if ($position < $this->getAbsoluteStartPosition()) {
+            return false;
+        }
+
+        $endPosition = $this->getAbsoluteStartPosition() + strlen($this->getBuffer());
+
+        if ($includeEnd) {
+            return $position <= $endPosition;
+        } else {
+            return $position < $endPosition;
+        }
     }
 
     /**
@@ -132,5 +143,24 @@ class Buffer
         $data = substr($this->getBuffer(), $this->getRelativeBufferPosition(), $length);
         $this->relativeBufferPosition += strlen($data);
         return $data;
+    }
+
+    /**
+     * @param string $data
+     * @return $this
+     */
+    public function write(string $data): static
+    {
+        $this->buffer = substr_replace($this->buffer, $data, $this->relativeBufferPosition);
+        $this->relativeBufferPosition += strlen($data);
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLength(): int
+    {
+        return strlen($this->buffer);
     }
 }

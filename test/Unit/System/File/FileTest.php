@@ -428,7 +428,7 @@ class FileTest extends FilesystemTestCase
      * @throws ReflectionException
      */
     #[WithoutErrorHandler]
-    public function testSocketThrowExceptionIncludesPreviousPHPError(): void
+    public function testSocketThrowExceptionIncludesPreviousPhpError(): void
     {
         $element = $this->createElement($this->getTmpPath() . "/test");
         $reflectionObject = new ReflectionObject($element);

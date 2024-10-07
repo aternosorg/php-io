@@ -57,4 +57,23 @@ class BufferTest extends TestCase
         $this->assertEquals("st", $buffer->read(2));
         $this->assertEquals(4, $buffer->getRelativeBufferPosition());
     }
+
+    public function testWrite(): void
+    {
+        $buffer = new Buffer();
+        $buffer->write("123");
+        $this->assertEquals("123", $buffer->getBuffer());
+        $buffer->write("456");
+        $this->assertEquals("123456", $buffer->getBuffer());
+        $buffer->setPosition(3);
+        $buffer->write("789");
+        $this->assertEquals("123789", $buffer->getBuffer());
+        $this->assertEquals(6, $buffer->getRelativeBufferPosition());
+    }
+
+    public function testGetLength(): void
+    {
+        $buffer = new Buffer(0, "test", 0);
+        $this->assertEquals(4, $buffer->getLength());
+    }
 }

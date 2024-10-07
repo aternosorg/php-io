@@ -1,7 +1,8 @@
 <?php
 
-namespace Aternos\IO\Abstract\Buffer;
+namespace Aternos\IO\Abstract\Buffer\Read;
 
+use Aternos\IO\Abstract\Buffer\Buffer;
 use Aternos\IO\Exception\IOException;
 
 /**

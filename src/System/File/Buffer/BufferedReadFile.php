@@ -1,7 +1,9 @@
 <?php
 
-namespace Aternos\IO\Abstract\Buffer;
+namespace Aternos\IO\System\File\Buffer;
 
+use Aternos\IO\Abstract\Buffer\Read\BufferedReadInterface;
+use Aternos\IO\Abstract\Buffer\Read\BufferedReadSetPositionTrait;
 use Aternos\IO\System\File\File;
 
 /**

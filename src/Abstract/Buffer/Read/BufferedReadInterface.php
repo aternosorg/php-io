@@ -1,6 +1,6 @@
 <?php
 
-namespace Aternos\IO\Abstract\Buffer;
+namespace Aternos\IO\Abstract\Buffer\Read;
 
 use Aternos\IO\Interfaces\Features\ReadInterface;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Aternos\IO\Test\Unit\Abstract\Buffer;
+namespace Aternos\IO\Test\Unit\System\File\Buffer;
 
-use Aternos\IO\Abstract\Buffer\BufferedReadFile;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SeekException;
+use Aternos\IO\System\File\Buffer\BufferedReadFile;
 use Aternos\IO\Test\Unit\System\File\FileTest;
 
 class BufferedReadFileTest extends FileTest
