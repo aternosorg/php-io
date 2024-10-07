@@ -2,6 +2,13 @@
 
 namespace Aternos\IO\Abstract\Buffer\Write;
 
+/**
+ * Trait BufferedWriteSetPositionTrait
+ *
+ * Trait for buffered write classes that also implement the {@link SetPositionInterface}
+ *
+ * @package Aternos\IO\Abstract\Buffer\Write
+ */
 trait BufferedWriteSetPositionTrait
 {
     use BufferedWriteTrait {

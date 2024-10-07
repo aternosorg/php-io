@@ -4,6 +4,13 @@ namespace Aternos\IO\Abstract\Buffer\Write;
 
 use Aternos\IO\Interfaces\Features\WriteInterface;
 
+/**
+ * Interface BufferedWriteInterface
+ *
+ * Allows writing data into a buffer that can be written to the actual element at once
+ *
+ * @package Aternos\IO\Abstract\Buffer\Write
+ */
 interface BufferedWriteInterface extends WriteInterface
 {
     /**

@@ -5,6 +5,13 @@ namespace Aternos\IO\Abstract\Buffer\Write;
 use Aternos\IO\Abstract\Buffer\Buffer;
 use Aternos\IO\Exception\IOException;
 
+/**
+ * Trait BufferedWriteTrait
+ *
+ * Trait for buffered write classes implementing the {@link BufferedWriteInterface}
+ *
+ * @package Aternos\IO\Abstract\Buffer\Write
+ */
 trait BufferedWriteTrait
 {
     protected ?Buffer $writeBuffer = null;
