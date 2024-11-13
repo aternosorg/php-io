@@ -245,7 +245,7 @@ class FileTest extends FilesystemTestCase
     #[RequiresOperatingSystemFamily("Linux")]
     public function testThrowsExceptionOnImpossibleTruncate(): void
     {
-        $element = $this->createElement("/dev/random");
+        $element = $this->createElement("/dev/null");
         $this->expectException(TruncateException::class);
         $this->expectExceptionMessage("Could not truncate file (/dev/null)");
         $element->truncate();
