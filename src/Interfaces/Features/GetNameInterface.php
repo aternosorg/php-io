@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\IOElementInterface;
 
 /**
@@ -18,6 +19,7 @@ interface GetNameInterface extends IOElementInterface
      * Get the name of the element, e.g. the name of a file in a directory or
      * a type name like "socket read stream"
      *
+     * @throws IOException
      * @return string
      */
     public function getName(): string;

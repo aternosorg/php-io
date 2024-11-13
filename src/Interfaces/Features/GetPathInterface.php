@@ -2,6 +2,8 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
+
 /**
  * Interface GetPathInterface
  *
@@ -14,6 +16,7 @@ interface GetPathInterface extends GetNameInterface
     /**
      * Get the path of the element
      *
+     * @throws IOException
      * @return string
      */
     public function getPath(): string;
@@ -21,6 +24,7 @@ interface GetPathInterface extends GetNameInterface
     /**
      * Get the relative path to another element
      *
+     * @throws IOException
      * @param GetPathInterface $element
      * @param bool $allowOutsideElement Allow paths outside the element, throws an exception otherwise
      * @return string

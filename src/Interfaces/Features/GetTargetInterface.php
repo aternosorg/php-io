@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\IOElementInterface;
 
 /**
@@ -16,6 +17,7 @@ interface GetTargetInterface extends IOElementInterface
     /**
      * Get the target of the link
      *
+     * @throws IOException
      * @return IOElementInterface
      */
     public function getTarget(): IOElementInterface;
@@ -23,6 +25,7 @@ interface GetTargetInterface extends IOElementInterface
     /**
      * Get the final target of the link, following all links until the final target is reached
      *
+     * @throws IOException
      * @return IOElementInterface
      */
     public function getFinalTarget(): IOElementInterface;

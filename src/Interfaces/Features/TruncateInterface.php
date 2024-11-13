@@ -2,6 +2,8 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
+
 /**
  * Interface TruncateInterface
  *
@@ -14,6 +16,7 @@ interface TruncateInterface extends GetPositionInterface
     /**
      * Truncate the element to the given size
      *
+     * @throws IOException
      * @param int $size
      * @return $this
      */

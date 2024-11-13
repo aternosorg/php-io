@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Generator;
 
@@ -17,6 +18,7 @@ interface GetChildrenInterface extends IOElementInterface
     /**
      * Get the direct children of this element
      *
+     * @throws IOException
      * @param bool $allowOutsideLinks If true, links pointing outside the element are allowed
      * @return Generator<IOElementInterface>
      */
@@ -25,6 +27,7 @@ interface GetChildrenInterface extends IOElementInterface
     /**
      * Get all children of this element recursively
      *
+     * @throws IOException
      * @param bool $allowOutsideLinks If true, links pointing outside the element are allowed
      * @param bool $followLinks If true, links are followed
      * @param int $currentDepth The current depth of the recursion (used internally)

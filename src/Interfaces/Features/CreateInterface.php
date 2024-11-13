@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\IOElementInterface;
 
 /**
@@ -16,6 +17,7 @@ interface CreateInterface extends IOElementInterface
     /**
      * Create the element
      *
+     * @throws IOException
      * @return $this
      */
     public function create(): static;

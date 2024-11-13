@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\IOElementInterface;
 
 /**
@@ -16,6 +17,7 @@ interface SetTargetInterface extends IOElementInterface
     /**
      * Set the target of a link element
      *
+     * @throws IOException
      * @param GetPathInterface $target
      * @return $this
      */

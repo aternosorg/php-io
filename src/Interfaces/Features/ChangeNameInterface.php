@@ -2,6 +2,8 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
+
 /**
  * Interface ChangeNameInterface
  *
@@ -14,6 +16,7 @@ interface ChangeNameInterface extends GetNameInterface
     /**
      * Change the name
      *
+     * @throws IOException
      * @param string $name
      * @return $this
      */

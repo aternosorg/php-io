@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\IOElementInterface;
 
 /**
@@ -16,6 +17,7 @@ interface IsEndOfFileInterface extends IOElementInterface
     /**
      * Check if the current position is at the end of the file
      *
+     * @throws IOException
      * @return bool
      */
     public function isEndOfFile(): bool;

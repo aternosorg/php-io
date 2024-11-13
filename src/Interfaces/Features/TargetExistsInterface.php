@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\IOElementInterface;
 
 /**
@@ -16,6 +17,7 @@ interface TargetExistsInterface extends IOElementInterface
     /**
      * Check if the target of the link exists
      *
+     * @throws IOException
      * @return bool
      */
     public function targetExists(): bool;

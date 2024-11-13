@@ -2,6 +2,8 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
+
 /**
  * Interface MovePathInterface
  *
@@ -14,6 +16,7 @@ interface MovePathInterface extends GetPathInterface, ChangeNameInterface
     /**
      * Move the element to the given path
      *
+     * @throws IOException
      * @param string $path
      * @return $this
      */

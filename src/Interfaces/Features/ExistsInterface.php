@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\IOElementInterface;
 
 /**
@@ -16,6 +17,7 @@ interface ExistsInterface extends IOElementInterface
     /**
      * Check if the element exists
      *
+     * @throws IOException
      * @return bool
      */
     public function exists(): bool;

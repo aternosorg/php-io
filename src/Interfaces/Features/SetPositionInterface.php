@@ -2,6 +2,8 @@
 
 namespace Aternos\IO\Interfaces\Features;
 
+use Aternos\IO\Exception\IOException;
+
 /**
  * Interface SetPositionInterface
  *
@@ -14,6 +16,7 @@ interface SetPositionInterface extends GetPositionInterface
     /**
      * Set the seek position of an element
      *
+     * @throws IOException
      * @param int $position
      * @return $this
      */
