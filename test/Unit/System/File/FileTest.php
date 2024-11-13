@@ -15,6 +15,7 @@ use Aternos\IO\Exception\WriteException;
 use Aternos\IO\Interfaces\Types\VolatileFileInterface;
 use Aternos\IO\System\File\File;
 use Aternos\IO\Test\Unit\System\FilesystemTestCase;
+use PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily;
 use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use ReflectionException;
 use ReflectionObject;
@@ -241,9 +242,10 @@ class FileTest extends FilesystemTestCase
     /**
      * @throws IOException
      */
+    #[RequiresOperatingSystemFamily("Linux")]
     public function testThrowsExceptionOnImpossibleTruncate(): void
     {
-        $element = $this->createElement("/dev/null");
+        $element = $this->createElement("/dev/random");
         $this->expectException(TruncateException::class);
         $this->expectExceptionMessage("Could not truncate file (/dev/null)");
         $element->truncate();
@@ -313,7 +315,7 @@ class FileTest extends FilesystemTestCase
     {
         $element = $this->createElement("/dev/null");
         $this->expectException(DeleteException::class);
-        $this->expectExceptionMessage("Could not delete file: unlink(/dev/null): Permission denied (/dev/null)");
+        $this->expectExceptionMessageMatches("/^Could not delete file: unlink\(\/dev\/null\): /");
         $element->delete();
     }
 
