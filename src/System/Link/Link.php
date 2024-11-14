@@ -126,11 +126,6 @@ class Link extends FilesystemElement implements LinkInterface, GetTargetPathInte
      * @return LinkInterface
      * @throws GetTargetException
      * @throws IOException
-     * @throws IOException
-     * @throws IOException
-     * @throws IOException
-     * @throws IOException
-     * @throws IOException
      */
     protected function getFinalLink(): LinkInterface
     {
