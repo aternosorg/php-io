@@ -15,7 +15,6 @@ use Aternos\IO\Exception\WriteException;
 use Aternos\IO\Interfaces\Types\VolatileFileInterface;
 use Aternos\IO\System\File\File;
 use Aternos\IO\Test\Unit\System\FilesystemTestCase;
-use PHPUnit\Framework\Attributes\RequiresOperatingSystemFamily;
 use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use ReflectionException;
 use ReflectionObject;
@@ -242,12 +241,15 @@ class FileTest extends FilesystemTestCase
     /**
      * @throws IOException
      */
-    #[RequiresOperatingSystemFamily("Linux")]
     public function testThrowsExceptionOnImpossibleTruncate(): void
     {
-        $element = $this->createElement("/dev/null");
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        file_put_contents($path, "test");
+        $reflectionObject = new ReflectionObject($element);
+        $reflectionObject->getProperty("socketResource")->setValue($element, fopen($path, "r"));
         $this->expectException(TruncateException::class);
-        $this->expectExceptionMessage("Could not truncate file (/dev/null)");
+        $this->expectExceptionMessage("Could not truncate file (" . $path . ")");
         $element->truncate();
     }
 
