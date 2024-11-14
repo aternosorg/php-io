@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\System\Socket\Stream;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\Features\GetNameInterface;
 use Aternos\IO\System\Socket\Traits\CloseSocketTrait;
 use Aternos\IO\System\Socket\Traits\GetSocketPositionTrait;
@@ -30,6 +31,7 @@ abstract class SocketStreamElement implements GetNameInterface
 
     /**
      * @inheritDoc
+     * @throws IOException
      */
     protected function getTypeForErrors(): string
     {

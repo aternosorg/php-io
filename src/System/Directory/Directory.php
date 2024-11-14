@@ -5,6 +5,7 @@ namespace Aternos\IO\System\Directory;
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Interfaces\Features\GetChildrenInterface;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
@@ -87,6 +88,7 @@ class Directory extends FilesystemElement implements DirectoryInterface
      * @param GetPathInterface $element
      * @return bool
      * @throws GetTargetException
+     * @throws IOException
      */
     protected function isElementInDirectory(GetPathInterface $element): bool
     {
@@ -102,6 +104,7 @@ class Directory extends FilesystemElement implements DirectoryInterface
      * @param Link $link
      * @return bool
      * @throws GetTargetException
+     * @throws IOException
      */
     protected function isLinkInDirectory(Link $link): bool
     {
@@ -135,6 +138,7 @@ class Directory extends FilesystemElement implements DirectoryInterface
      *
      * @param string $path
      * @return bool
+     * @throws IOException
      */
     protected function isPathInDirectory(string $path): bool
     {

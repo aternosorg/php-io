@@ -5,6 +5,7 @@ namespace Aternos\IO\System\Directory;
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MissingPermissionsException;
 
 /**
@@ -20,6 +21,7 @@ class TempDirectory extends Directory
      * @param string $prefix Prefix for the temporary directory name
      * @param bool $deleteOnDestruct
      * @throws CreateDirectoryException
+     * @throws IOException
      */
     public function __construct(string $prefix = "io-", protected bool $deleteOnDestruct = true)
     {
@@ -36,6 +38,7 @@ class TempDirectory extends Directory
      * @throws DeleteException
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function __destruct()
     {

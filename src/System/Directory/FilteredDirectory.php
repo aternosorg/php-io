@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\System\Directory;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\System\Directory\Filter\PathFilter;
 use Aternos\IO\System\FilesystemElement;
@@ -124,6 +125,7 @@ class FilteredDirectory extends Directory
      * @param FilesystemElement $element
      * @return bool
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     protected function shouldInclude(FilesystemElement $element): bool
     {
