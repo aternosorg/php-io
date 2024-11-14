@@ -3,6 +3,7 @@
 namespace Aternos\IO\System\Socket\Traits;
 
 use Aternos\IO\Exception\IOException;
+use Aternos\IO\Exception\TellException;
 
 /**
  * Trait GetSocketPositionTrait
@@ -22,6 +23,11 @@ trait GetSocketPositionTrait
     public function getPosition(): int
     {
         $file = $this->getSocketResource();
+
+        $result = @ftell($file);
+        if ($result === false) {
+            $this->throwException("Could not get {type} position", TellException::class);
+        }
         return @ftell($file);
     }
 }

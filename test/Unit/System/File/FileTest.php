@@ -10,6 +10,7 @@ use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Exception\ReadException;
 use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
+use Aternos\IO\Exception\TellException;
 use Aternos\IO\Exception\TruncateException;
 use Aternos\IO\Exception\WriteException;
 use Aternos\IO\Interfaces\Types\VolatileFileInterface;
@@ -180,6 +181,18 @@ class FileTest extends FilesystemTestCase
         $this->assertEquals(5, $element->getPosition());
         $this->assertEquals("5", $element->read(1));
         $this->assertEquals(6, $element->getPosition());
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     */
+    public function testThrowsExceptionOnImpossibleGetPosition(): void
+    {
+        $element = $this->createElement("/dev/null");
+        $this->expectException(TellException::class);
+        $this->expectExceptionMessage("Could not get file position (/dev/null)");
+        $element->getPosition();
     }
 
     /**
