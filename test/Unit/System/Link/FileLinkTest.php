@@ -6,10 +6,10 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\SetTargetException;
+use Aternos\IO\Interfaces\Types\FileInterface;
 use Aternos\IO\System\Directory\Directory;
 use Aternos\IO\System\File\File;
 use Aternos\IO\System\Link\FileLink;
-use Aternos\IO\Interfaces\Types\FileInterface;
 use ReflectionException;
 use ReflectionObject;
 
@@ -22,6 +22,7 @@ class FileLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetTarget(): void
     {
@@ -30,12 +31,14 @@ class FileLinkTest extends LinkTest
         $element = $this->createElement($this->getTmpPath() . "/test");
         $target = $element->getTarget();
         $this->assertInstanceOf(FileInterface::class, $target);
+        /** @var FileInterface $target */
         $this->assertEquals($this->getTmpPath() . "/test-target", $target->getPath());
     }
 
     /**
      * @return void
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetTargetTwiceReturnsSameObject(): void
     {
@@ -46,6 +49,11 @@ class FileLinkTest extends LinkTest
         $this->assertSame($target, $element->getTarget());
     }
 
+    /**
+     * @return void
+     * @throws GetTargetException
+     * @throws IOException
+     */
     public function testThrowsExceptionOnGetTargetWithInvalidTarget(): void
     {
         mkdir($this->getTmpPath() . "/test-target");
@@ -57,7 +65,23 @@ class FileLinkTest extends LinkTest
     }
 
     /**
+     * @return void
      * @throws GetTargetException
+     * @throws IOException
+     */
+    public function testGetNewTargetFileIfMissing(): void
+    {
+        symlink($this->getTmpPath() . "/test-target", $this->getTmpPath() . "/test");
+        $element = $this->createElement($this->getTmpPath() . "/test");
+        $target = $element->getTarget();
+        $this->assertInstanceOf(FileInterface::class, $target);
+        /** @var FileInterface $target */
+        $this->assertEquals($this->getTmpPath() . "/test-target", $target->getPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetTargetPath(): void
     {
@@ -69,6 +93,7 @@ class FileLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetFinalTargetPath(): void
     {
@@ -82,6 +107,7 @@ class FileLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetTargetOnLinkChainGetsLink(): void
     {
@@ -97,6 +123,7 @@ class FileLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetFinalTarget(): void
     {
@@ -113,6 +140,7 @@ class FileLinkTest extends LinkTest
     /**
      * @throws SetTargetException
      * @throws DeleteException
+     * @throws IOException
      */
     public function testSetTarget(): void
     {
@@ -126,6 +154,7 @@ class FileLinkTest extends LinkTest
     /**
      * @throws SetTargetException
      * @throws DeleteException
+     * @throws IOException
      */
     public function testSetTargetReplacesTarget(): void
     {
@@ -140,6 +169,7 @@ class FileLinkTest extends LinkTest
 
     /**
      * @throws DeleteException
+     * @throws IOException
      */
     public function testThrowsExceptionOnImpossibleSetTarget(): void
     {
@@ -151,6 +181,7 @@ class FileLinkTest extends LinkTest
 
     /**
      * @throws DeleteException
+     * @throws IOException
      */
     public function testThrowsExceptionOnInvalidSetTarget(): void
     {
@@ -189,6 +220,7 @@ class FileLinkTest extends LinkTest
      * @throws DeleteException
      * @throws GetTargetException
      * @throws SetTargetException
+     * @throws IOException
      */
     public function testCreate(): void
     {
@@ -204,6 +236,7 @@ class FileLinkTest extends LinkTest
      * @throws DeleteException
      * @throws GetTargetException
      * @throws SetTargetException
+     * @throws IOException
      */
     public function testGetPosition(): void
     {
@@ -223,6 +256,7 @@ class FileLinkTest extends LinkTest
      * @throws DeleteException
      * @throws GetTargetException
      * @throws SetTargetException
+     * @throws IOException
      */
     public function testSetPosition(): void
     {
@@ -239,6 +273,7 @@ class FileLinkTest extends LinkTest
      * @throws GetTargetException
      * @throws SetTargetException
      * @throws DeleteException
+     * @throws IOException
      */
     public function testGetSize(): void
     {
@@ -254,6 +289,7 @@ class FileLinkTest extends LinkTest
      * @throws DeleteException
      * @throws GetTargetException
      * @throws SetTargetException
+     * @throws IOException
      */
     public function testRead(): void
     {
@@ -269,6 +305,7 @@ class FileLinkTest extends LinkTest
      * @throws DeleteException
      * @throws GetTargetException
      * @throws SetTargetException
+     * @throws IOException
      */
     public function testWrite(): void
     {
@@ -284,6 +321,7 @@ class FileLinkTest extends LinkTest
      * @throws DeleteException
      * @throws GetTargetException
      * @throws SetTargetException
+     * @throws IOException
      */
     public function testTruncate(): void
     {

@@ -12,6 +12,9 @@ use PHPUnit\Framework\TestCase;
 
 class TempDiskFileTest extends TestCase
 {
+    /**
+     * @throws IOException
+     */
     public function testSelectsPathForTemporaryFile(): void
     {
         $file = new TempDiskFile();
@@ -25,6 +28,9 @@ class TempDiskFileTest extends TestCase
         $this->assertStringStartsWith("test-", $file->getName());
     }
 
+    /**
+     * @throws IOException
+     */
     public function testDeletesFileOnDestruct(): void
     {
         $file = new TempDiskFile();
@@ -34,6 +40,9 @@ class TempDiskFileTest extends TestCase
         $this->assertFileDoesNotExist($path);
     }
 
+    /**
+     * @throws IOException
+     */
     public function testDoesNotDeleteFileOnDestruct(): void
     {
         $file = new TempDiskFile("test-", false);

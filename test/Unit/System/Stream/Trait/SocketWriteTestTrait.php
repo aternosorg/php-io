@@ -50,6 +50,7 @@ trait SocketWriteTestTrait
         $reflectionObject->getProperty("socketResource")->setValue($stream, fopen("/dev/null", "r"));
 
         $this->expectException(WriteException::class);
+        /** @noinspection SpellCheckingInspection */
         $this->expectExceptionMessage("Could not write to " . $stream->getName() . ": fwrite(): Write of 4 bytes failed with errno=9 Bad file descriptor");
         $stream->write("test");
     }

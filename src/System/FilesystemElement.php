@@ -4,6 +4,8 @@ namespace Aternos\IO\System;
 
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
+use Aternos\IO\Exception\StatException;
+use Aternos\IO\Exception\TouchException;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\System\Directory\Directory;
 use Aternos\IO\System\File\File;
@@ -132,6 +134,84 @@ abstract class FilesystemElement implements FilesystemInterface
     public function exists(): bool
     {
         return file_exists($this->path);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws StatException
+     */
+    public function getAccessTimestamp(): int
+    {
+        $time = @fileatime($this->path);
+        if ($time === false) {
+            $error = error_get_last();
+            throw new StatException("Could not get access timestamp (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $time;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws StatException
+     */
+    public function getModificationTimestamp(): int
+    {
+        $time = @filemtime($this->path);
+        if ($time === false) {
+            $error = error_get_last();
+            throw new StatException("Could not get modification timestamp (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $time;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws StatException
+     */
+    public function getStatusChangeTimestamp(): int
+    {
+        $time = @filectime($this->path);
+        if ($time === false) {
+            $error = error_get_last();
+            throw new StatException("Could not get status change timestamp (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $time;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws TouchException
+     * @throws StatException
+     */
+    public function setAccessTimestamp(int $timestamp): static
+    {
+        if (!file_exists($this->path)) {
+            throw new StatException("Could not set access timestamp because element does not exist (" . $this->path . ")", $this);
+        }
+
+        if (!@touch($this->path, $timestamp, $timestamp)) {
+            $error = error_get_last();
+            throw new TouchException("Could not set access timestamp (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws TouchException
+     * @throws StatException
+     */
+    public function setModificationTimestamp(int $timestamp): static
+    {
+        if (!file_exists($this->path)) {
+            throw new StatException("Could not set modification timestamp because element does not exist (" . $this->path . ")", $this);
+        }
+
+        if (!@touch($this->path, mtime: $timestamp)) {
+            $error = error_get_last();
+            throw new TouchException("Could not set modification timestamp (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $this;
     }
 
     /**

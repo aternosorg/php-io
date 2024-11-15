@@ -2,13 +2,16 @@
 
 namespace Aternos\IO\Test\Unit\System;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
+use Aternos\IO\Exception\StatException;
+use Aternos\IO\Exception\TouchException;
+use Aternos\IO\Interfaces\Features\CreateInterface;
+use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\System\Directory\Directory;
 use Aternos\IO\System\FilesystemElement;
 use Aternos\IO\System\FilesystemInterface;
-use Aternos\IO\Interfaces\Features\CreateInterface;
-use Aternos\IO\Interfaces\IOElementInterface;
 
 abstract class FilesystemTestCase extends TmpDirTestCase
 {
@@ -21,6 +24,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
     /**
      * @param FilesystemInterface $element
      * @return void
+     * @throws IOException
      */
     protected function create(FilesystemInterface $element): void
     {
@@ -42,6 +46,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
      * @param string $path
      * @param FilesystemInterface[] $elements
      * @return FilesystemInterface
+     * @throws IOException
      */
     protected function getByPathFromArray(string $path, array $elements): FilesystemInterface
     {
@@ -57,6 +62,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
      * @param string $path
      * @param class-string<FilesystemInterface> $type
      * @param FilesystemInterface[] $elements
+     * @throws IOException
      */
     protected function assertPathHasTypeInArray(string $path, string $type, array $elements): void
     {
@@ -64,6 +70,10 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertInstanceOf($type, $element);
     }
 
+    /**
+     * @return void
+     * @throws IOException
+     */
     public function testGetPath(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -71,6 +81,10 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertEquals($path, $element->getPath());
     }
 
+    /**
+     * @return void
+     * @throws IOException
+     */
     public function testGetName(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -80,6 +94,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
 
     /**
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testGetRelativePath(): void
     {
@@ -91,6 +106,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
 
     /**
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testGetRelativePathOutsideElement(): void
     {
@@ -102,6 +118,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
 
     /**
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testGetRelativePathMultipleLayersOutsideElement(): void
     {
@@ -114,6 +131,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
     /**
      * @return void
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testGetRelativePathInOtherSubDirectory(): void
     {
@@ -123,6 +141,11 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertEquals("../sub-dir/test", $element->getRelativePathTo($directory, true));
     }
 
+    /**
+     * @return void
+     * @throws IOException
+     * @throws PathOutsideElementException
+     */
     public function testThrowsExceptionOnUnallowedRelativePathOutsideElement(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -136,6 +159,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
     /**
      * @return void
      * @throws MoveException
+     * @throws IOException
      */
     public function testMovePath(): void
     {
@@ -149,6 +173,11 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertFileDoesNotExist($path);
     }
 
+    /**
+     * @return void
+     * @throws IOException
+     * @throws MoveException
+     */
     public function testThrowsExceptionOnImpossibleMove(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -162,6 +191,7 @@ abstract class FilesystemTestCase extends TmpDirTestCase
 
     /**
      * @throws MoveException
+     * @throws IOException
      */
     public function testChangeName(): void
     {
@@ -175,6 +205,10 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertFileDoesNotExist($path);
     }
 
+    /**
+     * @return void
+     * @throws IOException
+     */
     public function testCheckIfElementExists(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -184,6 +218,10 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertTrue($element->exists());
     }
 
+    /**
+     * @return void
+     * @throws IOException
+     */
     public function testDelete(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -194,6 +232,10 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertFalse(file_exists($path));
     }
 
+    /**
+     * @return void
+     * @throws IOException
+     */
     public function testDeleteNonExisting(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -203,6 +245,190 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertFalse(file_exists($path));
     }
 
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     */
+    public function testGetModificationTimestamp(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        $this->assertIsInt($element->getModificationTimestamp());
+        $this->assertEquals(filemtime($path), $element->getModificationTimestamp());
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     */
+    public function testGetModificationTimestampThrowsException(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->expectException(StatException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not get modification timestamp (" . $path . "): filemtime(): stat failed for " . $path);
+        $element->getModificationTimestamp();
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     */
+    public function testGetAccessTimestamp(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        $this->assertIsInt($element->getAccessTimestamp());
+        $this->assertEquals(fileatime($path), $element->getAccessTimestamp());
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     */
+    public function testGetAccessTimestampThrowsException(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->expectException(StatException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not get access timestamp (" . $path . "): fileatime(): stat failed for " . $path);
+        $element->getAccessTimestamp();
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     */
+    public function testGetStatusChangeTimestamp(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        $this->assertIsInt($element->getStatusChangeTimestamp());
+        $this->assertEquals(filectime($path), $element->getStatusChangeTimestamp());
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     */
+    public function testGetStatusChangeTimestampThrowsException(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->expectException(StatException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not get status change timestamp (" . $path . "): filectime(): stat failed for " . $path);
+        $element->getStatusChangeTimestamp();
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     * @throws TouchException
+     */
+    public function testSetAccessTimestamp(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        $timestamp = 1234567890;
+        $element->setAccessTimestamp($timestamp);
+        $this->assertEquals($timestamp, fileatime($path));
+        $this->assertEquals($timestamp, $element->getAccessTimestamp());
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     * @throws TouchException
+     */
+    public function testSetAccessTimestampThrowsExceptionOnMissingElement(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->expectException(StatException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not set access timestamp because element does not exist (" . $path . ")");
+        $element->setAccessTimestamp(1234567890);
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     * @throws TouchException
+     */
+    public function testSetAccessTimestampThrowsExceptionOnImpossibleSet(): void
+    {
+        $element = $this->createElement("/");
+        $this->expectException(TouchException::class);
+        $this->expectExceptionMessage("Could not set access timestamp (" . $element->getPath() . ")");
+        $element->setAccessTimestamp(1234567890);
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     * @throws TouchException
+     */
+    public function testSetModificationTimestamp(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        $timestamp = 1234567890;
+        $element->setModificationTimestamp($timestamp);
+        $this->assertEquals($timestamp, filemtime($path));
+        $this->assertEquals($timestamp, $element->getModificationTimestamp());
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     * @throws TouchException
+     */
+    public function testSetModificationTimestampThrowsExceptionOnMissingElement(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->expectException(StatException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not set modification timestamp because element does not exist (" . $path . ")");
+        $element->setModificationTimestamp(1234567890);
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     * @throws TouchException
+     */
+    public function testSetModificationTimestampThrowsExceptionOnImpossibleSet(): void
+    {
+        $element = $this->createElement("/");
+        $this->expectException(TouchException::class);
+        $this->expectExceptionMessage("Could not set modification timestamp (" . $element->getPath() . ")");
+        $element->setModificationTimestamp(1234567890);
+    }
+
+    /**
+     * @return void
+     */
     public function testSerialize(): void
     {
         $path = $this->getTmpPath() . "/test";
@@ -211,6 +437,9 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->assertIsString($serialized);
     }
 
+    /**
+     * @return void
+     */
     public function testSerializeContainsPath(): void
     {
         $path = $this->getTmpPath() . "/test";

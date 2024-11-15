@@ -5,15 +5,16 @@ namespace Aternos\IO\Test\Unit\System\Directory;
 use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MissingPermissionsException;
-use Aternos\IO\System\Directory\Directory;
-use Aternos\IO\System\Link\DirectoryLink;
-use Aternos\IO\System\Link\FileLink;
-use Aternos\IO\System\Link\Link;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;
 use Aternos\IO\Interfaces\Types\Link\LinkInterface;
+use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\Link\DirectoryLink;
+use Aternos\IO\System\Link\FileLink;
+use Aternos\IO\System\Link\Link;
 use Aternos\IO\Test\Unit\System\FilesystemTestCase;
 use Generator;
 
@@ -27,6 +28,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws MissingPermissionsException
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetChildren(): void
     {
@@ -52,6 +54,7 @@ class DirectoryTest extends FilesystemTestCase
 
     /**
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testThrowsExceptionOnGetChildrenWithMissingPermissions(): void
     {
@@ -71,6 +74,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws MissingPermissionsException
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetChildrenRecursive(): void
     {
@@ -99,6 +103,7 @@ class DirectoryTest extends FilesystemTestCase
      * @return void
      * @throws MissingPermissionsException
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testThrowsExceptionOnGetChildrenRecursiveWithMissingPermissions(): void
     {
@@ -118,6 +123,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testThrowsExceptionOnImpossibleDelete(): void
     {
@@ -127,6 +133,11 @@ class DirectoryTest extends FilesystemTestCase
         $element->delete();
     }
 
+    /**
+     * @return void
+     * @throws CreateDirectoryException
+     * @throws IOException
+     */
     public function testThrowsExceptionOnFailedCreation(): void
     {
         $this->expectException(CreateDirectoryException::class);
@@ -137,6 +148,7 @@ class DirectoryTest extends FilesystemTestCase
 
     /**
      * @throws CreateDirectoryException
+     * @throws IOException
      */
     public function testCreate(): void
     {
@@ -148,7 +160,10 @@ class DirectoryTest extends FilesystemTestCase
     }
 
     /**
-     * @throws DeleteException|MissingPermissionsException|GetTargetException
+     * @throws DeleteException
+     * @throws GetTargetException
+     * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testDeleteRecursively(): void
     {
@@ -169,6 +184,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testGetChildrenLinks(): void
     {
@@ -193,6 +209,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testDontFollowLinks(): void
     {
@@ -216,6 +233,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testIgnoreOutsideLinks(): void
     {
@@ -234,6 +252,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testIgnoreOutsideLinksRecursive(): void
     {
@@ -255,6 +274,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testAllowOutsideLinks(): void
     {
@@ -273,12 +293,14 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(FileLink::class, $element);
         $target = $element->getTarget();
         $this->assertInstanceOf(FileInterface::class, $target);
+        /** @var FileInterface $target */
         $this->assertEquals($path . "/file", $target->getPath());
     }
 
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testAllowOutsideLinksRecursive(): void
     {
@@ -299,12 +321,14 @@ class DirectoryTest extends FilesystemTestCase
         $this->assertInstanceOf(FileLink::class, $element);
         $target = $element->getTarget();
         $this->assertInstanceOf(FileInterface::class, $target);
+        /** @var FileInterface $target */
         $this->assertEquals($path . "/file", $target->getPath());
     }
 
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testIgnoreOutsideLinkChains(): void
     {
@@ -325,6 +349,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testAllowOutsideLinkChains(): void
     {
@@ -347,6 +372,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testIgnoreInfiniteLinkLoops(): void
     {
@@ -364,6 +390,7 @@ class DirectoryTest extends FilesystemTestCase
     /**
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testIgnoreTooManyLinks(): void
     {
@@ -386,6 +413,7 @@ class DirectoryTest extends FilesystemTestCase
      * @return void
      * @throws GetTargetException
      * @throws MissingPermissionsException
+     * @throws IOException
      */
     public function testLimitRecursiveDepth(): void
     {

@@ -11,6 +11,7 @@ abstract class TmpDirTestCase extends TestCase
     protected function getTmpPath(): string
     {
         if ($this->tmpPath === null) {
+            /** @noinspection SpellCheckingInspection */
             $this->tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid("aternos-io-test-");
             mkdir($this->tmpPath);
         }

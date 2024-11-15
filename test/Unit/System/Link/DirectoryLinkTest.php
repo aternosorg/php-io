@@ -4,13 +4,14 @@ namespace Aternos\IO\Test\Unit\System\Link;
 
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\SetTargetException;
-use Aternos\IO\System\Directory\Directory;
-use Aternos\IO\System\File\File;
-use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;
+use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\File\File;
+use Aternos\IO\System\Link\DirectoryLink;
 use Generator;
 
 class DirectoryLinkTest extends LinkTest
@@ -22,6 +23,8 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
+     * @throws IOException
      */
     public function testGetTarget(): void
     {
@@ -36,6 +39,8 @@ class DirectoryLinkTest extends LinkTest
     /**
      * @return void
      * @throws GetTargetException
+     * @throws IOException
+     * @throws IOException
      */
     public function testGetTargetTwiceReturnsSameObject(): void
     {
@@ -46,6 +51,9 @@ class DirectoryLinkTest extends LinkTest
         $this->assertSame($target, $element->getTarget());
     }
 
+    /**
+     * @throws IOException
+     */
     public function testThrowsExceptionOnGetTargetWithInvalidTarget(): void
     {
         touch($this->getTmpPath() . "/test-target");
@@ -57,7 +65,23 @@ class DirectoryLinkTest extends LinkTest
     }
 
     /**
+     * @return void
      * @throws GetTargetException
+     * @throws IOException
+     */
+    public function testGetNewTargetDirectoryIfMissing(): void
+    {
+        symlink($this->getTmpPath() . "/test-target", $this->getTmpPath() . "/test");
+        $element = $this->createElement($this->getTmpPath() . "/test");
+        $target = $element->getTarget();
+        $this->assertInstanceOf(DirectoryInterface::class, $target);
+        /** @var DirectoryInterface $target */
+        $this->assertEquals($this->getTmpPath() . "/test-target", $target->getPath());
+    }
+
+    /**
+     * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetTargetPath(): void
     {
@@ -69,6 +93,7 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
      */
     public function testGetFinalTargetPath(): void
     {
@@ -82,6 +107,8 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
+     * @throws IOException
      */
     public function testGetTargetOnLinkChainGetsLink(): void
     {
@@ -97,6 +124,8 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
+     * @throws IOException
      */
     public function testGetFinalTarget(): void
     {
@@ -113,6 +142,7 @@ class DirectoryLinkTest extends LinkTest
     /**
      * @throws SetTargetException
      * @throws DeleteException
+     * @throws IOException
      */
     public function testSetTarget(): void
     {
@@ -126,6 +156,7 @@ class DirectoryLinkTest extends LinkTest
     /**
      * @throws SetTargetException
      * @throws DeleteException
+     * @throws IOException
      */
     public function testSetTargetReplacesTarget(): void
     {
@@ -140,6 +171,7 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws DeleteException
+     * @throws IOException
      */
     public function testThrowsExceptionOnImpossibleSetTarget(): void
     {
@@ -151,6 +183,7 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws DeleteException
+     * @throws IOException
      */
     public function testThrowsExceptionOnInvalidSetTarget(): void
     {
@@ -164,6 +197,8 @@ class DirectoryLinkTest extends LinkTest
      * @throws GetTargetException
      * @throws SetTargetException
      * @throws DeleteException
+     * @throws IOException
+     * @throws IOException
      */
     public function testCreate(): void
     {
@@ -176,6 +211,11 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
+     * @throws IOException
+     * @throws IOException
+     * @throws IOException
+     * @throws IOException
      */
     public function testGetChildren(): void
     {
@@ -204,6 +244,12 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
+     * @throws IOException
+     * @throws IOException
+     * @throws IOException
+     * @throws IOException
+     * @throws IOException
+     * @throws IOException
      */
     public function testGetChildrenRecursive(): void
     {

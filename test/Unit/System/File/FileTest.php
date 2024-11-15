@@ -110,6 +110,7 @@ class FileTest extends FilesystemTestCase
         $reflectionObject = new ReflectionObject($element);
         $reflectionObject->getProperty("socketResource")->setValue($element, fopen($path, "w"));
         $this->expectException(ReadException::class);
+        /** @noinspection SpellCheckingInspection */
         $this->expectExceptionMessage("Could not read from file: fread(): Read of 8192 bytes failed with errno=9 Bad file descriptor (" . $path . ")");
         $element->read(4);
     }
@@ -121,6 +122,7 @@ class FileTest extends FilesystemTestCase
     {
         $element = $this->createElement("/dev/null/test");
         $this->expectException(IOException::class);
+        /** @noinspection SpellCheckingInspection */
         $this->expectExceptionMessage("Could not open file: fopen(/dev/null/test): Failed to open stream: No such file or directory (/dev/null/test)");
         $element->read(4);
     }
@@ -136,6 +138,7 @@ class FileTest extends FilesystemTestCase
         chmod($path, 0222);
         $element = $this->createElement($path);
         $this->expectException(MissingPermissionsException::class);
+        /** @noinspection SpellCheckingInspection */
         $this->expectExceptionMessage("Could not read from file due to missing read permissions: fread(): Read of 8192 bytes failed with errno=9 Bad file descriptor (" . $path . ")");
         $element->read(4);
     }
@@ -289,6 +292,7 @@ class FileTest extends FilesystemTestCase
         $reflectionObject = new ReflectionObject($element);
         $reflectionObject->getProperty("socketResource")->setValue($element, fopen($path, "r"));
         $this->expectException(WriteException::class);
+        /** @noinspection SpellCheckingInspection */
         $this->expectExceptionMessage("Could not write to file: fwrite(): Write of 4 bytes failed with errno=9 Bad file descriptor (" . $path . ")");
         $element->write("test");
     }
@@ -304,6 +308,7 @@ class FileTest extends FilesystemTestCase
         chmod($path, 0444);
         $element = $this->createElement($path);
         $this->expectException(MissingPermissionsException::class);
+        /** @noinspection SpellCheckingInspection */
         $this->expectExceptionMessage("Could not write to file due to missing write permissions: fwrite(): Write of 4 bytes failed with errno=9 Bad file descriptor (" . $path . ")");
         $element->write("test");
     }

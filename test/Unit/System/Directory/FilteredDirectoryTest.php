@@ -3,6 +3,7 @@
 namespace Aternos\IO\Test\Unit\System\Directory;
 
 use Aternos\IO\Exception\GetTargetException;
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\System\Directory\Directory;
@@ -50,6 +51,7 @@ class FilteredDirectoryTest extends DirectoryTest
      * @throws GetTargetException
      * @throws MissingPermissionsException
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testExcludesFiltered(): void
     {
@@ -68,6 +70,7 @@ class FilteredDirectoryTest extends DirectoryTest
      * @throws GetTargetException
      * @throws MissingPermissionsException
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testExcludesFilteredExplicit(): void
     {
@@ -87,6 +90,7 @@ class FilteredDirectoryTest extends DirectoryTest
      * @throws GetTargetException
      * @throws MissingPermissionsException
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testExcludesFilteredRecursive(): void
     {
@@ -108,6 +112,7 @@ class FilteredDirectoryTest extends DirectoryTest
      * @throws GetTargetException
      * @throws MissingPermissionsException
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testIncludesOnlyFiltered(): void
     {
@@ -127,6 +132,7 @@ class FilteredDirectoryTest extends DirectoryTest
      * @throws GetTargetException
      * @throws MissingPermissionsException
      * @throws PathOutsideElementException
+     * @throws IOException
      */
     public function testIncludesOnlyFilteredRecursive(): void
     {

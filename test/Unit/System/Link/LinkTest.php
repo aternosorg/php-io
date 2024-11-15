@@ -4,6 +4,7 @@ namespace Aternos\IO\Test\Unit\System\Link;
 
 use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\System\FilesystemInterface;
 use Aternos\IO\System\Link\Link;
 use Aternos\IO\Test\Unit\System\FilesystemTestCase;
@@ -23,6 +24,10 @@ class LinkTest extends FilesystemTestCase
     protected function create(FilesystemInterface $element): void
     {
         symlink($this->getTmpPath() . "/test-target", $element->getPath());
+        if (get_class($this) === LinkTest::class) {
+            touch($this->getTmpPath() . "/test-target");
+        }
+        parent::create($element);
     }
 
     protected function assertExists(string $path): void
@@ -32,6 +37,7 @@ class LinkTest extends FilesystemTestCase
 
     /**
      * @throws ReflectionException
+     * @throws IOException
      */
     public function testThrowsExceptionOnImpossibleDelete(): void
     {
@@ -45,6 +51,21 @@ class LinkTest extends FilesystemTestCase
     /**
      * @return void
      * @throws GetTargetException
+     * @throws IOException
+     */
+    public function testGetTargetTwiceReturnsSameObject(): void
+    {
+        touch($this->getTmpPath() . "/test-target");
+        symlink($this->getTmpPath() . "/test-target", $this->getTmpPath() . "/test");
+        $element = $this->createElement($this->getTmpPath() . "/test");
+        $target = $element->getTarget();
+        $this->assertSame($target, $element->getTarget());
+    }
+
+    /**
+     * @return void
+     * @throws GetTargetException
+     * @throws IOException
      */
     public function testThrowsExceptionOnGetTargetWithMissingLink(): void
     {
@@ -54,25 +75,17 @@ class LinkTest extends FilesystemTestCase
         $element->getTarget();
     }
 
+    /**
+     * @return void
+     * @throws GetTargetException
+     * @throws IOException
+     */
     public function testThrowsExceptionOnGetTargetWithNoLink(): void
     {
         $this->expectException(GetTargetException::class);
         $this->expectExceptionMessage("Could not get link target because link does not exist (" . $this->getTmpPath() . "/test" . ")");
         $element = $this->createElement($this->getTmpPath() . "/test");
         touch($element->getPath());
-        $element->getTarget();
-    }
-
-    /**
-     * @return void
-     * @throws GetTargetException
-     */
-    public function testThrowsExceptionOnGetTargetWithMissingTarget(): void
-    {
-        $this->expectException(GetTargetException::class);
-        $this->expectExceptionMessage("Could not get link target because target does not exist (" . $this->getTmpPath() . "/test-target" . ")");
-        $element = $this->createElement($this->getTmpPath() . "/test");
-        $this->create($element);
         $element->getTarget();
     }
 

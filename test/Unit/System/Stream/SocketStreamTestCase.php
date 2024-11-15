@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Test\Unit\System\Stream;
 
+use Aternos\IO\Exception\IOException;
 use Aternos\IO\Interfaces\Features\CloseInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
@@ -36,6 +37,7 @@ abstract class SocketStreamTestCase extends TestCase
 
     /**
      * @throws ReflectionException
+     * @throws IOException
      */
     public function testClose(): void
     {
