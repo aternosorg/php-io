@@ -24,7 +24,6 @@ class DirectoryLinkTest extends LinkTest
     /**
      * @throws GetTargetException
      * @throws IOException
-     * @throws IOException
      */
     public function testGetTarget(): void
     {
@@ -39,7 +38,6 @@ class DirectoryLinkTest extends LinkTest
     /**
      * @return void
      * @throws GetTargetException
-     * @throws IOException
      * @throws IOException
      */
     public function testGetTargetTwiceReturnsSameObject(): void
@@ -108,7 +106,6 @@ class DirectoryLinkTest extends LinkTest
     /**
      * @throws GetTargetException
      * @throws IOException
-     * @throws IOException
      */
     public function testGetTargetOnLinkChainGetsLink(): void
     {
@@ -124,7 +121,6 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
-     * @throws IOException
      * @throws IOException
      */
     public function testGetFinalTarget(): void
@@ -198,7 +194,6 @@ class DirectoryLinkTest extends LinkTest
      * @throws SetTargetException
      * @throws DeleteException
      * @throws IOException
-     * @throws IOException
      */
     public function testCreate(): void
     {
@@ -211,10 +206,6 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
-     * @throws IOException
-     * @throws IOException
-     * @throws IOException
-     * @throws IOException
      * @throws IOException
      */
     public function testGetChildren(): void
@@ -244,11 +235,6 @@ class DirectoryLinkTest extends LinkTest
 
     /**
      * @throws GetTargetException
-     * @throws IOException
-     * @throws IOException
-     * @throws IOException
-     * @throws IOException
-     * @throws IOException
      * @throws IOException
      */
     public function testGetChildrenRecursive(): void
