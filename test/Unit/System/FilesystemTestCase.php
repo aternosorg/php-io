@@ -2,6 +2,7 @@
 
 namespace Aternos\IO\Test\Unit\System;
 
+use Aternos\IO\Exception\ChmodException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
@@ -12,6 +13,7 @@ use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\System\Directory\Directory;
 use Aternos\IO\System\FilesystemElement;
 use Aternos\IO\System\FilesystemInterface;
+use Aternos\IO\System\Util\Permissions;
 
 abstract class FilesystemTestCase extends TmpDirTestCase
 {
@@ -424,6 +426,65 @@ abstract class FilesystemTestCase extends TmpDirTestCase
         $this->expectException(TouchException::class);
         $this->expectExceptionMessage("Could not set modification timestamp (" . $element->getPath() . ")");
         $element->setModificationTimestamp(1234567890);
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     */
+    public function testGetPermissions(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        chmod($path, 0o755);
+        $this->assertEquals(0o755, $element->getPermissions()->toNumeric());
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws StatException
+     */
+    public function testThrowsExceptionOnGetPermissions(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->expectException(StatException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not get permissions (" . $path . ")");
+        $element->getPermissions();
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws ChmodException
+     */
+    public function testSetPermissions(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        chmod($path, 0o777);
+        $element->setPermissions(Permissions::fromNumeric(0o755));
+        $this->assertEquals(0o755, fileperms($path) & 0o777);
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     * @throws ChmodException
+     */
+    public function testThrowsExceptionOnSetPermissions(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->expectException(ChmodException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not set permissions (" . $path . ")");
+        $element->setPermissions(Permissions::fromNumeric(0o755));
     }
 
     /**

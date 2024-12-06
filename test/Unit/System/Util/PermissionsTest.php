@@ -4,7 +4,7 @@ namespace Aternos\IO\Test\Unit\System\Util;
 
 use Aternos\IO\System\Util\Permissions;
 use Aternos\IO\System\Util\PermissionsClass;
-use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class PermissionsTest extends TestCase
@@ -68,19 +68,7 @@ class PermissionsTest extends TestCase
         $this->assertSame($otherPermissions, $permissions->getOther());
     }
 
-    #[TestWith([0o000, false, false, false, false, false, false, false, false, false])]
-    #[TestWith([0o100, true, false, false, false, false, false, false, false, false])]
-    #[TestWith([0o200, false, true, false, false, false, false, false, false, false])]
-    #[TestWith([0o400, false, false, true, false, false, false, false, false, false])]
-    #[TestWith([0o010, false, false, false, true, false, false, false, false, false])]
-    #[TestWith([0o020, false, false, false, false, true, false, false, false, false])]
-    #[TestWith([0o040, false, false, false, false, false, true, false, false, false])]
-    #[TestWith([0o001, false, false, false, false, false, false, true, false, false])]
-    #[TestWith([0o002, false, false, false, false, false, false, false, true, false])]
-    #[TestWith([0o004, false, false, false, false, false, false, false, false, true])]
-    #[TestWith([0o777, true, true, true, true, true, true, true, true, true])]
-    #[TestWith([0o755, true, true, true, true, false, true, true, false, true])]
-    #[TestWith([0o070, false, false, false, true, true, true, false, false, false])]
+    #[DataProvider("getTestData")]
     public function testFromNumeric(int $numericPermissions, $userRead, $userWrite, $userExecute, $groupRead, $groupWrite, $groupExecute, $otherRead, $otherWrite, $otherExecute): void
     {
         $permissions = Permissions::fromNumeric($numericPermissions);
@@ -93,5 +81,35 @@ class PermissionsTest extends TestCase
         $this->assertSame($otherRead, $permissions->getOther()->canRead());
         $this->assertSame($otherWrite, $permissions->getOther()->canWrite());
         $this->assertSame($otherExecute, $permissions->getOther()->canExecute());
+    }
+
+    #[DataProvider("getTestData")]
+    public function testToNumeric(int $numericPermissions, $userRead, $userWrite, $userExecute, $groupRead, $groupWrite, $groupExecute, $otherRead, $otherWrite, $otherExecute): void
+    {
+        $permissions = new Permissions(
+            new PermissionsClass($userRead, $userWrite, $userExecute),
+            new PermissionsClass($groupRead, $groupWrite, $groupExecute),
+            new PermissionsClass($otherRead, $otherWrite, $otherExecute)
+        );
+        $this->assertSame($numericPermissions, $permissions->toNumeric());
+    }
+
+    public static function getTestData(): array
+    {
+        return [
+            [0o000, false, false, false, false, false, false, false, false, false],
+            [0o100, false, false, true, false, false, false, false, false, false],
+            [0o200, false, true, false, false, false, false, false, false, false],
+            [0o400, true, false, false, false, false, false, false, false, false],
+            [0o010, false, false, false, false, false, true, false, false, false],
+            [0o020, false, false, false, false, true, false, false, false, false],
+            [0o040, false, false, false, true, false, false, false, false, false],
+            [0o001, false, false, false, false, false, false, false, false, true],
+            [0o002, false, false, false, false, false, false, false, true, false],
+            [0o004, false, false, false, false, false, false, true, false, false],
+            [0o777, true, true, true, true, true, true, true, true, true],
+            [0o755, true, true, true, true, false, true, true, false, true],
+            [0o070, false, false, false, true, true, true, false, false, false]
+        ];
     }
 }

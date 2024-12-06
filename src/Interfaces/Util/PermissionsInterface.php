@@ -55,4 +55,11 @@ interface PermissionsInterface
      * @return $this
      */
     public function setOther(PermissionsClassInterface $other): static;
+
+    /**
+     * Get the numeric representation of the permissions
+     *
+     * @return int
+     */
+    public function toNumeric(): int;
 }

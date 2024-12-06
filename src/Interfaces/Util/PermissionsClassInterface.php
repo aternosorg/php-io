@@ -55,4 +55,11 @@ interface PermissionsClassInterface
      * @return $this
      */
     public function setExecute(bool $execute): static;
+
+    /**
+     * Get the numeric representation of the class
+     *
+     * @return int
+     */
+    public function toNumeric(): int;
 }

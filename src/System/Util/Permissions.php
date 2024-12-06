@@ -14,6 +14,11 @@ use Aternos\IO\Interfaces\Util\PermissionsInterface;
  */
 class Permissions implements PermissionsInterface
 {
+    protected const int CLASS_MASK = 0b111;
+    protected const int READ_SHIFT = 6;
+    protected const int WRITE_SHIFT = 3;
+    protected const int EXECUTE_SHIFT = 0;
+
     /**
      * @param int $permissions
      * @return static
@@ -21,20 +26,14 @@ class Permissions implements PermissionsInterface
     public static function fromNumeric(int $permissions): static
     {
         return new static(
-            new PermissionsClass(
-                ($permissions & 0o100) === 0o100,
-                ($permissions & 0o200) === 0o200,
-                ($permissions & 0o400) === 0o400
+            PermissionsClass::fromNumeric(
+                ($permissions >> static::READ_SHIFT) & static::CLASS_MASK
             ),
-            new PermissionsClass(
-                ($permissions & 0o010) === 0o010,
-                ($permissions & 0o020) === 0o020,
-                ($permissions & 0o040) === 0o040
+            PermissionsClass::fromNumeric(
+                ($permissions >> static::WRITE_SHIFT) & static::CLASS_MASK
             ),
-            new PermissionsClass(
-                ($permissions & 0o001) === 0o001,
-                ($permissions & 0o002) === 0o002,
-                ($permissions & 0o004) === 0o004
+            PermissionsClass::fromNumeric(
+                ($permissions >> static::EXECUTE_SHIFT) & static::CLASS_MASK
             )
         );
     }
@@ -102,5 +101,15 @@ class Permissions implements PermissionsInterface
     {
         $this->other = $other;
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toNumeric(): int
+    {
+        return ($this->user->toNumeric() << static::READ_SHIFT)
+            + ($this->group->toNumeric() << static::WRITE_SHIFT)
+            + ($this->other->toNumeric() << static::EXECUTE_SHIFT);
     }
 }

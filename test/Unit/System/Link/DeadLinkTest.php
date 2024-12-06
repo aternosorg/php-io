@@ -2,10 +2,12 @@
 
 namespace Aternos\IO\Test\Unit\System\Link;
 
+use Aternos\IO\Exception\ChmodException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TouchException;
+use Aternos\IO\System\Util\Permissions;
 
 class DeadLinkTest extends LinkTest
 {
@@ -168,5 +170,27 @@ class DeadLinkTest extends LinkTest
         $this->expectException(StatException::class);
         $this->expectExceptionMessage("Could not set modification timestamp because element does not exist (" . $path . ")");
         $element->setModificationTimestamp(0);
+    }
+
+    public function testGetPermissions(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        $this->expectException(StatException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not get permissions (" . $path . "): fileperms(): stat failed for " . $path);
+        $element->getPermissions();
+    }
+
+    public function testSetPermissions(): void
+    {
+        $path = $this->getTmpPath() . "/test";
+        $element = $this->createElement($path);
+        $this->create($element);
+        $this->expectException(ChmodException::class);
+        /** @noinspection SpellCheckingInspection */
+        $this->expectExceptionMessage("Could not set permissions (" . $path . "): chmod(): No such file or directory");
+        $element->setPermissions(Permissions::fromNumeric(0o777));
     }
 }

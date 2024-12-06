@@ -2,16 +2,19 @@
 
 namespace Aternos\IO\System;
 
+use Aternos\IO\Exception\ChmodException;
 use Aternos\IO\Exception\MoveException;
 use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TouchException;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
+use Aternos\IO\Interfaces\Util\PermissionsInterface;
 use Aternos\IO\System\Directory\Directory;
 use Aternos\IO\System\File\File;
 use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;
+use Aternos\IO\System\Util\Permissions;
 
 /**
  * Class FilesystemElement
@@ -210,6 +213,33 @@ abstract class FilesystemElement implements FilesystemInterface
         if (!@touch($this->path, mtime: $timestamp)) {
             $error = error_get_last();
             throw new TouchException("Could not set modification timestamp (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws StatException
+     */
+    public function getPermissions(): PermissionsInterface
+    {
+        $numericPermissions = @fileperms($this->path);
+        if ($numericPermissions === false) {
+            $error = error_get_last();
+            throw new StatException("Could not get permissions (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
+        }
+        return Permissions::fromNumeric($numericPermissions);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws ChmodException
+     */
+    public function setPermissions(PermissionsInterface $permissions): static
+    {
+        if (!@chmod($this->path, $permissions->toNumeric())) {
+            $error = error_get_last();
+            throw new ChmodException("Could not set permissions (" . $this->path . ")" . ($error ? ": " . $error["message"] : ""), $this);
         }
         return $this;
     }

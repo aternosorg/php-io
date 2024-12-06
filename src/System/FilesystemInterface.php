@@ -6,10 +6,12 @@ use Aternos\IO\Interfaces\Features\DeleteInterface;
 use Aternos\IO\Interfaces\Features\ExistsInterface;
 use Aternos\IO\Interfaces\Features\GetAccessTimestampInterface;
 use Aternos\IO\Interfaces\Features\GetModificationTimestampInterface;
+use Aternos\IO\Interfaces\Features\GetPermissionsInterface;
 use Aternos\IO\Interfaces\Features\GetStatusChangeTimestampInterface;
 use Aternos\IO\Interfaces\Features\MovePathInterface;
 use Aternos\IO\Interfaces\Features\SetAccessTimestampInterface;
 use Aternos\IO\Interfaces\Features\SetModificationTimestampInterface;
+use Aternos\IO\Interfaces\Features\SetPermissionsInterface;
 
 /**
  * Interface FilesystemInterface
@@ -26,7 +28,9 @@ interface FilesystemInterface extends
     GetModificationTimestampInterface,
     GetStatusChangeTimestampInterface,
     SetAccessTimestampInterface,
-    SetModificationTimestampInterface
+    SetModificationTimestampInterface,
+    GetPermissionsInterface,
+    SetPermissionsInterface
 {
 
 }
