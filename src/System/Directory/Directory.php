@@ -10,11 +10,16 @@ use Aternos\IO\Exception\MissingPermissionsException;
 use Aternos\IO\Interfaces\Features\GetChildrenInterface;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\Features\GetTargetInterface;
+use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
+use Aternos\IO\System\File\File;
 use Aternos\IO\System\FilesystemElement;
+use Aternos\IO\System\Link\DirectoryLink;
+use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;
 use DirectoryIterator;
 use Generator;
+use InvalidArgumentException;
 
 /**
  * Class Directory
@@ -54,6 +59,64 @@ class Directory extends FilesystemElement implements DirectoryInterface
             yield $element;
         }
     }
+
+    /**
+     * @inheritDoc
+     * @return FilesystemElement
+     */
+    public function getChild(string $name, string ...$features): FilesystemElement
+    {
+        /** @var class-string<FilesystemElement>[] $supportedChildClasses */
+        $supportedChildClasses = [
+            static::class,
+            DirectoryLink::class,
+            File::class,
+            FileLink::class,
+            Link::class
+        ];
+
+        /** @var class-string<FilesystemElement> $childClass */
+        $childClass = $this->findInstanceOfAll($supportedChildClasses, $features);
+        if (!$childClass) {
+            throw new InvalidArgumentException("No supported child class found for features: " . implode(", ", $features));
+        }
+        return new $childClass($this->getPath() . DIRECTORY_SEPARATOR . $name);
+    }
+
+    /**
+     * Find a class that is an instance of all required classes
+     *
+     * @param class-string[] $availableClasses
+     * @param class-string[] $requiredClasses
+     * @return string|null
+     */
+    protected function findInstanceOfAll(array $availableClasses, array $requiredClasses): ?string
+    {
+        foreach ($availableClasses as $availableClass) {
+            if ($this->isInstanceOfAll($availableClass, $requiredClasses)) {
+                return $availableClass;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if a class is an instance of all required classes
+     *
+     * @param class-string $class
+     * @param class-string[] $requiredClasses
+     * @return bool
+     */
+    protected function isInstanceOfAll(string $class, array $requiredClasses): bool
+    {
+        foreach ($requiredClasses as $requiredClass) {
+            if (!is_a($class, $requiredClass, true)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /**
      * @inheritDoc
