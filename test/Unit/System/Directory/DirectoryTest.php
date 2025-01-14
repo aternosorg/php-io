@@ -7,16 +7,23 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\MissingPermissionsException;
+use Aternos\IO\Interfaces\Features\GetChildrenInterface;
+use Aternos\IO\Interfaces\Features\ReadInterface;
+use Aternos\IO\Interfaces\Features\WriteInterface;
 use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\Interfaces\Types\FileInterface;
 use Aternos\IO\Interfaces\Types\Link\LinkInterface;
 use Aternos\IO\System\Directory\Directory;
+use Aternos\IO\System\File\File;
+use Aternos\IO\System\FilesystemElement;
 use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;
 use Aternos\IO\Test\Unit\System\FilesystemTestCase;
 use Generator;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 
 class DirectoryTest extends FilesystemTestCase
 {
@@ -118,6 +125,52 @@ class DirectoryTest extends FilesystemTestCase
         iterator_to_array($directory->getChildrenRecursive());
 
         chmod($path, 0777);
+    }
+
+    /**
+     * @param class-string[] $features
+     * @param class-string $expected
+     * @return void
+     * @throws IOException
+     */
+    #[TestWith([FileInterface::class])]
+    #[TestWith([File::class])]
+    #[TestWith([DirectoryInterface::class])]
+    #[TestWith([Directory::class])]
+    #[TestWith([LinkInterface::class])]
+    #[TestWith([FileLink::class])]
+    #[TestWith([DirectoryLink::class])]
+    #[TestWith([Link::class])]
+    #[TestWith([[WriteInterface::class, ReadInterface::class], File::class])]
+    #[TestWith([[GetChildrenInterface::class], Directory::class])]
+    public function testGetChild(array|string $features, ?string $expected = null): void
+    {
+        if (is_string($features)) {
+            $features = [$features];
+        }
+
+        if ($expected === null) {
+            $expected = $features[0];
+        }
+
+        $path = $this->getTmpPath();
+        $element = $this->createElement($path);
+
+        $child = $element->getChild("test", ...$features);
+        $this->assertInstanceOf($expected, $child);
+        $this->assertEquals($path . "/test", $child->getPath());
+    }
+
+    /**
+     * @return void
+     * @throws IOException
+     */
+    public function testGetChildThrowsExceptionOnInvalidFeatureCombination(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("No supported child class found for features: Aternos\IO\Interfaces\Features\WriteInterface, Aternos\IO\Interfaces\Features\GetChildrenInterface");
+        $element = $this->createElement($this->getTmpPath());
+        $element->getChild("test", WriteInterface::class, GetChildrenInterface::class);
     }
 
     /**

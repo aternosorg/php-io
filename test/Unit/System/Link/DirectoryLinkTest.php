@@ -261,4 +261,19 @@ class DirectoryLinkTest extends LinkTest
         $this->assertPathHasTypeInArray($path . "/file1", FileInterface::class, $children);
         $this->assertPathHasTypeInArray($path . "/file2", FileInterface::class, $children);
     }
+
+    /**
+     * @return void
+     * @throws DeleteException
+     * @throws IOException
+     * @throws SetTargetException
+     */
+    public function testGetChild(): void
+    {
+        mkdir($this->getTmpPath() . "/test-target");
+        $element = $this->createElement($this->getTmpPath() . "/test");
+        $element->setTarget(new Directory($this->getTmpPath() . "/test-target"));
+
+        $this->assertInstanceOf(File::class, $element->getChild("test", FileInterface::class));
+    }
 }

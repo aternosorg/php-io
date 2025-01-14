@@ -6,6 +6,7 @@ use Aternos\IO\Exception\DeleteException;
 use Aternos\IO\Exception\GetTargetException;
 use Aternos\IO\Exception\SetTargetException;
 use Aternos\IO\Interfaces\Features\GetPathInterface;
+use Aternos\IO\Interfaces\IOElementInterface;
 use Aternos\IO\Interfaces\Types\DirectoryInterface;
 use Aternos\IO\Interfaces\Types\Link\DirectoryLinkInterface;
 use Aternos\IO\System\Directory\Directory;
@@ -82,5 +83,13 @@ class DirectoryLink extends Link implements DirectoryLinkInterface
     public function getChildrenRecursive(bool $allowOutsideLinks = false, bool $followLinks = true, int $currentDepth = 0): Generator
     {
         yield from $this->getTarget()->getChildrenRecursive($allowOutsideLinks, $followLinks, $currentDepth);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getChild(string $name, string ...$features): IOElementInterface
+    {
+        return $this->getTarget()->getChild($name, ...$features);
     }
 }
