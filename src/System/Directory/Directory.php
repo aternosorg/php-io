@@ -68,7 +68,7 @@ class Directory extends FilesystemElement implements DirectoryInterface
     {
         /** @var class-string<FilesystemElement>[] $supportedChildClasses */
         $supportedChildClasses = [
-            static::class,
+            Directory::class,
             DirectoryLink::class,
             File::class,
             FileLink::class,
