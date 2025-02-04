@@ -4,16 +4,15 @@ namespace Aternos\IO\System;
 
 use Aternos\IO\Exception\ChmodException;
 use Aternos\IO\Exception\MoveException;
-use Aternos\IO\Exception\PathOutsideElementException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TouchException;
-use Aternos\IO\Interfaces\Features\GetPathInterface;
 use Aternos\IO\Interfaces\Util\PermissionsInterface;
 use Aternos\IO\System\Directory\Directory;
 use Aternos\IO\System\File\File;
 use Aternos\IO\System\Link\DirectoryLink;
 use Aternos\IO\System\Link\FileLink;
 use Aternos\IO\System\Link\Link;
+use Aternos\IO\System\Util\GetRelativePathToTrait;
 use Aternos\IO\System\Util\Permissions;
 
 /**
@@ -25,6 +24,8 @@ use Aternos\IO\System\Util\Permissions;
  */
 abstract class FilesystemElement implements FilesystemInterface
 {
+    use GetRelativePathToTrait;
+
     /**
      * Get the matching filesystem element for a path
      *
@@ -79,41 +80,6 @@ abstract class FilesystemElement implements FilesystemInterface
     public function getPath(): string
     {
         return $this->path;
-    }
-
-    /**
-     * @inheritDoc
-     * @throws PathOutsideElementException
-     */
-    public function getRelativePathTo(GetPathInterface $element, bool $allowOutsideElement = false): string
-    {
-        $sourcePath = $element->getPath();
-        $targetPath = $this->getPath();
-
-        $sourcePathParts = explode(DIRECTORY_SEPARATOR, $sourcePath);
-        $targetPathParts = explode(DIRECTORY_SEPARATOR, $targetPath);
-
-        foreach ($sourcePathParts as $key => $sourcePathPart) {
-            if (isset($targetPathParts[$key]) && $targetPathParts[$key] === $sourcePathPart) {
-                unset($sourcePathParts[$key]);
-                unset($targetPathParts[$key]);
-                continue;
-            }
-
-            if (!$allowOutsideElement) {
-                throw new PathOutsideElementException("Path is outside of element (" . $sourcePath . " -> " . $targetPath . ")", $this);
-            }
-            break;
-        }
-
-        $relativePath = "";
-        foreach ($sourcePathParts as $ignored) {
-            $relativePath .= ".." . DIRECTORY_SEPARATOR;
-        }
-        foreach ($targetPathParts as $targetPathPart) {
-            $relativePath .= $targetPathPart . DIRECTORY_SEPARATOR;
-        }
-        return rtrim($relativePath, DIRECTORY_SEPARATOR);
     }
 
     /**
