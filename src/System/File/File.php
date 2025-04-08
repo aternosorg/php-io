@@ -18,6 +18,7 @@ use Aternos\IO\System\Socket\Traits\GetSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\IsEndOfFileSocketTrait;
 use Aternos\IO\System\Socket\Traits\OpenSocketTrait;
 use Aternos\IO\System\Socket\Traits\ReadSocketTrait;
+use Aternos\IO\System\Socket\Traits\RewindSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\SetSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\TruncateSocketTrait;
 use Aternos\IO\System\Socket\Traits\WriteSocketTrait;
@@ -37,6 +38,7 @@ class File extends FilesystemElement implements FileInterface
         IsEndOfFileSocketTrait,
         ReadSocketTrait,
         SetSocketPositionTrait,
+        RewindSocketPositionTrait,
         TruncateSocketTrait,
         WriteSocketTrait {
         write as traitWrite;

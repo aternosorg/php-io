@@ -11,7 +11,7 @@ use Aternos\IO\Exception\IOException;
  *
  * @package Aternos\IO\Interfaces\Features
  */
-interface SetPositionInterface extends GetPositionInterface
+interface SetPositionInterface extends RewindPositionInterface
 {
     /**
      * Set the seek position of an element
