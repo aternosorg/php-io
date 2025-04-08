@@ -270,6 +270,25 @@ class FileLinkTest extends LinkTest
     }
 
     /**
+     * @return void
+     * @throws DeleteException
+     * @throws GetTargetException
+     * @throws IOException
+     * @throws SetTargetException
+     */
+    public function testRewindPosition(): void
+    {
+        $targetPath = $this->getTmpPath() . "/test-target";
+        file_put_contents($targetPath, "0123456789");
+        $element = $this->createElement($this->getTmpPath() . "/test");
+        $element->setTarget(new File($targetPath));
+        $element->setPosition(3);
+        $this->assertEquals(3, $element->getPosition());
+        $element->rewindPosition();
+        $this->assertEquals(0, $element->getPosition());
+    }
+
+    /**
      * @throws GetTargetException
      * @throws SetTargetException
      * @throws DeleteException

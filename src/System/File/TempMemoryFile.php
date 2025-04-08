@@ -10,6 +10,7 @@ use Aternos\IO\System\Socket\Traits\GetSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\IsEndOfFileSocketTrait;
 use Aternos\IO\System\Socket\Traits\OpenSocketTrait;
 use Aternos\IO\System\Socket\Traits\ReadSocketTrait;
+use Aternos\IO\System\Socket\Traits\RewindSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\SetSocketPositionTrait;
 use Aternos\IO\System\Socket\Traits\TruncateSocketTrait;
 use Aternos\IO\System\Socket\Traits\WriteSocketTrait;
@@ -32,6 +33,7 @@ class TempMemoryFile implements VolatileFileInterface
         IsEndOfFileSocketTrait,
         ReadSocketTrait,
         SetSocketPositionTrait,
+        RewindSocketPositionTrait,
         TruncateSocketTrait,
         WriteSocketTrait,
         GetSizeTrait;

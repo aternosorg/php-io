@@ -6,6 +6,7 @@ use Aternos\IO\Exception\CreateDirectoryException;
 use Aternos\IO\Exception\CreateFileException;
 use Aternos\IO\Exception\IOException;
 use Aternos\IO\Exception\ReadException;
+use Aternos\IO\Exception\RewindException;
 use Aternos\IO\Exception\SeekException;
 use Aternos\IO\Exception\StatException;
 use Aternos\IO\Exception\TruncateException;
@@ -114,6 +115,38 @@ trait VolatileFileTestTrait
         $file = $this->getVolatileFile();
         $this->expectException(SeekException::class);
         $file->setPosition(-1);
+    }
+
+    /**
+     * @return void
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     * @throws IOException
+     */
+    public function testRewindPosition(): void
+    {
+        $file = $this->getVolatileFile();
+        $file->write('test');
+        $this->assertEquals(4, $file->getPosition());
+        $file->rewindPosition();
+        $this->assertEquals(0, $file->getPosition());
+    }
+
+    /**
+     * @return void
+     * @throws CreateDirectoryException
+     * @throws CreateFileException
+     * @throws IOException
+     * @throws ReflectionException
+     */
+    public function testRewindPositionThrowsException(): void
+    {
+        $file = $this->getVolatileFile();
+        $reflectionFile = new ReflectionObject($file);
+        $socketResource = $reflectionFile->getProperty('socketResource');
+        $socketResource->setValue($file, fopen('php://output', 'w'));
+        $this->expectException(RewindException::class);
+        $file->rewindPosition();
     }
 
     /**

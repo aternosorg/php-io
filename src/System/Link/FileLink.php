@@ -140,4 +140,13 @@ class FileLink extends Link implements FileLinkInterface
     {
         return $this->getTarget()->isEndOfFile();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function rewindPosition(): static
+    {
+        $this->getTarget()->rewindPosition();
+        return $this;
+    }
 }
