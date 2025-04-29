@@ -20,4 +20,11 @@ class IOExceptionTest extends TestCase
         $exception = new IOException("test", $element);
         $this->assertSame($element, $exception->getIOElement());
     }
+
+    public function testGetPrevious(): void
+    {
+        $previous = new \Exception("previous");
+        $exception = new IOException("test", null, $previous);
+        $this->assertSame($previous, $exception->getPrevious());
+    }
 }
