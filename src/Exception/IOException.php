@@ -4,6 +4,7 @@ namespace Aternos\IO\Exception;
 
 use Aternos\IO\Interfaces\IOElementInterface;
 use Exception;
+use Throwable;
 
 /**
  * Class IOException
@@ -17,10 +18,15 @@ class IOException extends Exception
     /**
      * @param string $message
      * @param IOElementInterface|null $element
+     * @param Throwable|null $previous
      */
-    public function __construct(string $message = "", protected IOElementInterface|null $element = null)
+    public function __construct(
+        string $message = "",
+        protected IOElementInterface|null $element = null,
+        ?Throwable $previous = null
+    )
     {
-        parent::__construct($message);
+        parent::__construct($message, previous: $previous);
     }
 
     /**
